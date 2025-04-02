@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import '../css/app.css';
+import FilterWidget from './FilterWidget.tsx';
+import Pagination from './Pagination.tsx';
 
 interface Order {
   orderId: string;
@@ -8,6 +10,7 @@ interface Order {
   quantity: number;
   price: number;
   total: number;
+  status: string;
 }
 
 export default function MyOrder() {
@@ -20,6 +23,7 @@ export default function MyOrder() {
       quantity: 2,
       price: 5000,
       total: 10000,
+      status: '배송중',
     },
     {
       orderId: 'ORD12346',
@@ -28,6 +32,7 @@ export default function MyOrder() {
       quantity: 1,
       price: 15000,
       total: 15000,
+      status: '배송완료',
     },
     {
       orderId: 'ORD12347',
@@ -36,20 +41,40 @@ export default function MyOrder() {
       quantity: 3,
       price: 2000,
       total: 6000,
+      status: '배송중',
     },
   ]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  // const totalPages = Math.ceil(items.length / itemsPerPage);
+
+  // YYYY-MM-DD 형식으로 변환하는 함수
+  const formatDate = (date: Date) => {
+    return date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식 반환
+  };
+
+  // 페이지네이션 함수
+  const paginate = <T,>(
+    items: T[],
+    currentPage: number,
+    itemsPerPage: number
+  ): T[] => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return items.slice(startIndex, startIndex + itemsPerPage);
+  };
 
   return (
     <div
       style={{
-        maxWidth: '1000px',
-        margin: '40px auto',
+        minWidth: '750px',
         padding: '20px',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       }}
     >
+      <FilterWidget
+        onFilter={function (filters: any): void {
+          throw new Error('Function not implemented.');
+        }}
+      />
       <h2
         style={{
           fontSize: '20px',
@@ -129,6 +154,16 @@ export default function MyOrder() {
             >
               총액 (원)
             </th>
+            <th
+              style={{
+                padding: '10px',
+                border: '1px solid #ddd',
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}
+            >
+              처리상태
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -188,10 +223,25 @@ export default function MyOrder() {
               >
                 {order.total.toLocaleString()}
               </td>
+              <td
+                style={{
+                  padding: '10px',
+                  border: '1px solid #ddd',
+                  textAlign: 'center',
+                }}
+              >
+                {order.status.toLocaleString()}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {/* 페이지네이션 */}
+      <Pagination
+        currentPage={currentPage}
+        // totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

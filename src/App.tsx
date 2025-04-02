@@ -3,6 +3,7 @@ import Login from './components/Login.tsx';
 import SignUp from './components/SignUp.tsx';
 import Mypage from './components/Mypage.tsx';
 import MyOrder from './components/MyOrder.tsx';
+import OrderDone from './components/OrderDone.tsx';
 import '../src/css/app.css';
 
 const App: React.FC = () => {
@@ -11,7 +12,8 @@ const App: React.FC = () => {
       {/* <Login /> */}
       {/* <SignUp /> */}
       {/* <Mypage /> */}
-      <MyOrder />
+      {/* <MyOrder /> */}
+      <OrderDone />
     </div>
   );
 };
