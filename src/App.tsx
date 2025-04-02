@@ -1,24 +1,19 @@
-import React from "react";
-import "./App.css";
+import React from 'react';
+import Login from './components/Login.tsx';
+import SignUp from './components/SignUp.tsx';
+import Mypage from './components/Mypage.tsx';
+import MyOrder from './components/MyOrder.tsx';
+import '../src/css/app.css';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="body">
+      {/* <Login /> */}
+      {/* <SignUp /> */}
+      {/* <Mypage /> */}
+      <MyOrder />
     </div>
   );
-}
+};
 
 export default App;

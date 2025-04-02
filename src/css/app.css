@@ -1,0 +1,65 @@
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.login-signup-box {
+  border: 1px solid #5a5a5a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 550px;
+  padding: 30px 0px 30px 0px;
+  max-height: 90vh;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-logo {
+  background-color: lightblue;
+  height: 150px;
+  width: 80%;
+  text-align: center;
+}
+
+.login-welcome {
+  margin-top: 50px;
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-signup-input {
+  width: 80%;
+  height: 50px;
+  margin-bottom: 30px;
+}
+
+.login-signup-button-box {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+}
+
+.kakao-button {
+  margin-top: 20px;
+  height: 50px;
+  background-color: #ffda1e;
+  border: none;
+  border-radius: 8px;
+}
+
+.email-button {
+  margin-top: 20px;
+  height: 50px;
+  background-color: #1fc4be;
+  border: none;
+  border-radius: 8px;
+}
