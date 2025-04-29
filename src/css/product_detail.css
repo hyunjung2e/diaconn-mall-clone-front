@@ -1,0 +1,158 @@
+/* 기본 스타일 */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+/* 컨테이너 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 헤더 */
+header {
+    background-color: #ffffff;
+    padding: 15px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    width: 150px; /* 로고 크기 조정 */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input {
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login, .cart {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    padding: 5px 10px;
+    background-color: #00796b;
+    border-radius: 5px;
+}
+
+/* 네비게이션 */
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background-color: #009688;
+    padding: 10px 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* 상품 상세 */
+.product-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 50px; /* 이미지와 상세정보 간격 */
+}
+
+.product-image {
+    flex: 1;
+    text-align: center;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-image img {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    border: 1px solid #ddd;
+}
+
+.product-details {
+    flex: 1;
+    background-color: #fff3f3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.product-details h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.product-details .price {
+    font-size: 20px;
+    color: #00796b;
+    margin-bottom: 20px;
+}
+
+.product-details p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.product-details .btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* 장바구니 담기 버튼 */
+.add-to-cart {
+    background-color: #00796b;
+    color: white;
+}
+
+.add-to-cart:hover {
+    background-color: #004d40;
+}
+
+/* 바로 구매 버튼 */
+.buy-now {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.buy-now:hover {
+    background-color: #c2185b;
+}
+
+/* 푸터 */
+footer {
+    background-color: #00796b;
+    text-align: center;
+    padding: 30px 0;
+    color: white;
+}

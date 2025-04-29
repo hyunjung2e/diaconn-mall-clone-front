@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 화면</title>
+    <link rel="stylesheet" href="./css/order.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="#" class="logo"><img src="./img/logo.png" alt="로고"></a>
+            <div class="header-right">
+                <input type="text" placeholder="검색어를 입력해주세요.">
+                <a href="#" class="login">로그인</a>
+                <a href="#" class="cart">장바구니</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="menu">
+        <a href="#">메뉴1</a>
+        <a href="#">메뉴2</a>
+        <a href="#">메뉴3</a>
+        <a href="#">메뉴4</a>
+    </nav>
+
+    <div class="container">
+        <div class="order-list">
+            <div><input type="checkbox"></div>
+            <div><img src="./img/product1.jpg" alt="상품 이미지"></div>
+            <div>상품명 1<br>가격: 10,000원</div>
+            <div>10,000원</div>
+            <div><input type="number" value="1" min="1"></div>
+        </div>
+        <div class="order-list">
+            <div><input type="checkbox"></div>
+            <div><img src="./img/product2.jpg" alt="상품 이미지"></div>
+            <div>상품명 2<br>가격: 20,000원</div>
+            <div>20,000원</div>
+            <div><input type="number" value="1" min="1"></div>
+        </div>
+
+        <div class="order-info">받는이: 아콘이</div>
+        <div class="order-info">주소: 서울시 강남구 테헤란로 123</div>
+        <div class="order-info">개인정보: 010-1234-5678</div>
+        <div class="order-info"><input type="text" placeholder="배송 메시지를 입력해주세요."></div>
+        
+        <div class="pay-button">총 금액: 30,000원 결제하기</div>
+    </div>
+</body>
+</html>

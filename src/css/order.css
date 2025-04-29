@@ -1,0 +1,102 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 헤더 */
+header {
+    background-color: #ffffff;
+    padding: 15px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login, .cart {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    padding: 5px 10px;
+    background-color: #00796b;
+    border-radius: 5px;
+}
+
+/* 네비게이션 */
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background-color: #009688;
+    padding: 10px 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* 주문 리스트 */
+.order-list {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1fr 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f1f1f1;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.order-list img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.order-info {
+    background: #fff;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.pay-button {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: #ff5722;
+    color: white;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pay-button:hover {
+    background: #e64a19;
+}

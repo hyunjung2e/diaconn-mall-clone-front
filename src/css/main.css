@@ -1,0 +1,137 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 헤더 */
+header {
+    background-color: #ffffff;
+    padding: 15px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input {
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login, .cart {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    padding: 5px 10px;
+    background-color: #00796b;
+    border-radius: 5px;
+}
+
+/* 네비게이션 */
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background-color: #009688;
+    padding: 10px 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* 메인 배너 */
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    background-color: #ddd;
+}
+
+.banner {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 상품 리스트 */
+section {
+    padding: 40px 0;
+    text-align: center;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.product-list li {
+    width: calc(33.33% - 20px);
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-radius: 10px;
+}
+
+.product-list img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.product-list h3 {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.product-list p {
+    font-size: 16px;
+    color: #777;
+    font-weight: bold;
+}
+
+/* 푸터 */
+footer {
+    background-color: #00796b;
+    text-align: center;
+    padding: 50px 0;
+    color: white;
+}
