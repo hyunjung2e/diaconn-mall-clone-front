@@ -3,7 +3,10 @@ html, body {
     padding: 0;
     width: 100%;
     font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    min-height: 100vh; 
 }
+
 
 .container {
     max-width: 1400px;
@@ -15,6 +18,7 @@ html, body {
 header {
     background-color: #ffffff;
     padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 header .container {
@@ -51,6 +55,7 @@ input {
 }
 
 /* 네비게이션 */
+main{display: block;}
 .menu {
     display: flex;
     justify-content: center;
