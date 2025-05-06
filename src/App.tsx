@@ -5,6 +5,7 @@ import SignUp from "./components/SignUp.tsx";
 import Mypage from "./components/Mypage.tsx";
 import MyOrder from "./components/MyOrder.tsx";
 import OrderDone from "./components/OrderDone.tsx";
+import Main from "./components/Main.tsx";
 import "../src/css/app.css";
 
 const App: React.FC = () => {
@@ -13,6 +14,7 @@ const App: React.FC = () => {
       <div className="body">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path='/main' element={<Main />}/>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/myorder" element={<MyOrder />} />
