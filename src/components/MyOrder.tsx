@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../css/app.css';
 import FilterWidget from './FilterWidget.tsx';
 import Pagination from './Pagination.tsx';
 
@@ -46,7 +45,8 @@ export default function MyOrder() {
   ]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const totalPages = Math.ceil(items.length / itemsPerPage);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
 
   // YYYY-MM-DD 형식으로 변환하는 함수
   const formatDate = (date: Date) => {
@@ -238,9 +238,9 @@ export default function MyOrder() {
       </table>
       {/* 페이지네이션 */}
       <Pagination
-        currentPage={currentPage}
-        // totalPages={totalPages}
+        totalPages={totalPages}
         onPageChange={setCurrentPage}
+        currentPage={0}
       />
     </div>
   );
