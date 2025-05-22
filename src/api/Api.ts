@@ -8,3 +8,18 @@ export const register = async (userData: any) => {
   });
   return response.json();
 };
+
+
+export const login = async (loginData: { email: string; password: string }) => {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(loginData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+  }
+
+  return response.json();
+};
