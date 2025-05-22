@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../css/login.css';
+import { register } from '../api/Api.ts';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -7,7 +8,6 @@ export default function SignUp() {
     email: '',
     phone: '',
     password: '',
-    password2: '',
     address: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -22,17 +22,22 @@ export default function SignUp() {
     if (!formData.email) newErrors.email = '이메일을 입력하세요';
     if (!formData.phone) newErrors.phone = '휴대폰 번호를 입력하세요';
     if (!formData.password) newErrors.password = '비밀번호를 입력하세요';
-    if (!formData.password2)
-      newErrors.password2 = '비밀번호가 일치하지 않습니다';
     if (!formData.address) newErrors.address = '주소를 입력하세요';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      console.log('User Data:', formData);
+      try {
+        const response = await register(formData);
+        console.log('회원가입 성공:', response);
+        alert('회원가입이 완료되었습니다!');
+      } catch (error) {
+        console.error('회원가입 실패:', error);
+        alert('회원가입 중 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -166,7 +171,6 @@ export default function SignUp() {
             <input
               type="password"
               name="password2"
-              value={formData.password2}
               onChange={handleChange}
               style={{
                 width: '450px',
