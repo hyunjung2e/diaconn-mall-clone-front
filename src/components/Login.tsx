@@ -1,34 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // 추가
+import { useNavigate } from 'react-router-dom';
+import { login } from '../api/Api.ts'; 
 import '../css/login.css';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();  // 페이지 이동 함수
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await login({ email, password });
 
-      if (!response.ok) {
-        throw new Error('로그인 실패');
-      }
-
-      const data = await response.json();
       alert(`${data.user.name}님 환영합니다!`);
-
       setEmail('');
       setPassword('');
-
-      // 로그인 성공 시 main 페이지로 이동
       navigate('/main');
-    } catch (error) {
-      alert('로그인 실패! 이메일과 비밀번호를 확인해주세요.');
+    } catch (error: any) {
+      alert(error.message || '로그인 실패! 이메일과 비밀번호를 확인해주세요.');
       console.error(error);
     }
   };
