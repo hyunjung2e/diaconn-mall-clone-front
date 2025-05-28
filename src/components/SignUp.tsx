@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../css/login.css';
-import { register } from '../api/Api.ts';
+import { register, checkEmailDuplicate } from '../api/Api.ts';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -11,6 +11,7 @@ export default function SignUp() {
     address: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [emailCheckMsg, setEmailCheckMsg] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +26,21 @@ export default function SignUp() {
     if (!formData.address) newErrors.address = '주소를 입력하세요';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleCheckEmail = async () => {
+    if (!formData.email) {
+      alert('이메일을 입력해주세요.');
+      return;
+    }
+
+    try {
+      const result = await checkEmailDuplicate(formData.email);
+      alert(result.message);
+    } catch (error) {
+      console.error('이메일 중복 확인 실패:', error);
+      alert('이메일 중복 확인 중 오류가 발생했습니다.');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,6 +112,7 @@ export default function SignUp() {
                 }}
               />
               <button
+                onClick={handleCheckEmail}
                 style={{
                   flex: 2,
                   height: '40px',

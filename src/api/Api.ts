@@ -9,7 +9,6 @@ export const register = async (userData: any) => {
   return response.json();
 };
 
-
 export const login = async (loginData: { email: string; password: string }) => {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
@@ -22,4 +21,11 @@ export const login = async (loginData: { email: string; password: string }) => {
   }
 
   return response.json();
+};
+
+export const checkEmailDuplicate = async (email: string) => {
+  const response = await fetch(
+    `${API_BASE_URL}/user/checkemail?email=${encodeURIComponent(email)}`
+  );
+  return await response.json(); // { isDuplicate: boolean, message: string }
 };
