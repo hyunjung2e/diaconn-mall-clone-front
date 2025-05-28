@@ -12,6 +12,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
   width: 550px;
   padding: 30px 0px 30px 0px;
   max-height: 90vh;
@@ -20,15 +21,11 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.login-logo {
-  background-color: lightblue;
-  height: 150px;
-  width: 80%;
-  text-align: center;
-}
-
-.login-welcome {
+.logo{
+  display: block;
+  width: 200px;
   margin-top: 50px;
+  margin-bottom: 20px;
 }
 
 .login-title {
@@ -39,27 +36,66 @@
 .login-signup-input {
   width: 80%;
   height: 50px;
-  margin-bottom: 30px;
+  padding-left: 15px; 
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .login-signup-button-box {
   display: flex;
   flex-direction: column;
   width: 70%;
+  align-items: center;
 }
 
 .kakao-button {
-  margin-top: 20px;
-  height: 50px;
-  background-color: #ffda1e;
+  padding: 0;
   border: none;
-  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
+.kakao-button img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  display: block;
+}
 .email-button {
   margin-top: 20px;
   height: 50px;
+  width: 100%;
+  max-width: 500px;
   background-color: #1fc4be;
   border: none;
   border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-left: 40px; 
+}
+
+.email-button img {
+  position: absolute;
+  left: 10px;   
+  height: 24px;
+  width: 25px;
+  top: 50%;
+  transform: translateY(-50%); 
+  margin: 0;
+}
+
+.signup_link{
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  text-align: right;
+  border-bottom: 2px solid #1fc4be;
 }

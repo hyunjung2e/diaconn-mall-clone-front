@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/Api.ts'; 
 import '../css/login.css';
@@ -21,42 +22,49 @@ const Login: React.FC = () => {
       console.error(error);
     }
   };
-
-  return (
+ return (
     <div className="body">
       <div className="login-signup-box">
-        <div className="login-logo">로고 들어가는 부분</div>
-        <h3 className="login-welcome">디아콘몰에 오신 것을 환영합니다</h3>
+        <img className='logo' src="/img/logo.png" alt="디아콘몰 로고" />
+        
+
         <input
           type="email"
           className="login-signup-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일 입력"
+          placeholder="이메일을 입력해주세요."
           autoComplete="username"
         />
+
         <input
           type="password"
           className="login-signup-input"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="비밀번호 입력"
+          placeholder="비밀번호를 입력해주세요."
           autoComplete="current-password"
         />
+
         <div className="login-signup-button-box">
           <button
             className="kakao-button"
             onClick={() => alert('카카오 로그인 기능은 추후 구현 예정입니다.')}
           >
-            카카오 로그인
+            <img src="/img/kakao-login-button.png" alt="카카오 로그인 버튼" />
           </button>
+
           <button className="email-button" onClick={handleLogin}>
+            <img src="/img/email_icon.png" alt="이메일 아이콘" />
             이메일 로그인
           </button>
         </div>
+
+        <Link className='signup_link' to="/signup">회원이 아니신가요?</Link>
       </div>
     </div>
   );
 };
 
 export default Login;
+
