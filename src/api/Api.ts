@@ -14,13 +14,16 @@ export const login = async (loginData: { email: string; password: string }) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(loginData),
+    credentials: 'include', // 쿠키 포함 옵션
   });
 
+   const data = await response.json();
+
   if (!response.ok) {
-    const errorData = await response.json();
+    throw new Error(data.message || '로그인 실패');
   }
 
-  return response.json();
+  return data;
 };
 
 export const checkEmailDuplicate = async (email: string) => {
@@ -44,4 +47,19 @@ export const getBanners = async () => {
   }
 
   return response.json();
+};
+
+
+// 사용자 정보 조회
+export const getLoggedInUser = async () => {
+  const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
+    method: 'GET',
+    credentials: 'include', // 쿠키 포함 (세션 유지용)
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json(); 
 };
