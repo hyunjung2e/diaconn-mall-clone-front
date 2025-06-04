@@ -27,5 +27,21 @@ export const checkEmailDuplicate = async (email: string) => {
   const response = await fetch(
     `${API_BASE_URL}/user/checkemail?email=${encodeURIComponent(email)}`
   );
-  return await response.json(); // { isDuplicate: boolean, message: string }
+  return await response.json();
+};
+
+export const getBanners = async () => {
+  const response = await fetch(`${API_BASE_URL}/banners`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(
+      errorData.message || '배너 목록을 가져오는 데 실패했습니다.'
+    );
+  }
+
+  return response.json();
 };

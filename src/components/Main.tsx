@@ -1,7 +1,22 @@
-import React from 'react';
 import '../css/main.css';
+import { useState, useEffect } from 'react';
+import { getBanners } from '../api/Api.ts';
+
+type Banner = {
+  id: number;
+  imageUrl: string;
+  altText: string;
+};
 
 const Main = () => {
+  const [banners, setBanners] = useState<Banner[]>([]);
+
+  useEffect(() => {
+    getBanners()
+      .then((data) => setBanners(data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <>
       <header>
@@ -11,8 +26,12 @@ const Main = () => {
           </a>
           <div className="header-right">
             <input type="text" placeholder="검색어를 입력해주세요." />
-            <a href="#" className="login">로그인</a>
-            <a href="#" className="cart">장바구니</a>
+            <a href="#" className="login">
+              로그인
+            </a>
+            <a href="#" className="cart">
+              장바구니
+            </a>
           </div>
         </div>
       </header>
@@ -26,7 +45,13 @@ const Main = () => {
 
       <main>
         <div className="container">
-          <img src="/images/banner.jpg" alt="배너 이미지" className="banner" />
+          {banners.map((banner) => (
+            <img
+              key={banner.id}
+              src={`http://localhost:8080${banner.imageUrl}`}
+              alt={banner.altText}
+            />
+          ))}
         </div>
       </main>
 
@@ -36,7 +61,10 @@ const Main = () => {
           <ul className="product-list">
             {Array.from({ length: 6 }, (_, i) => (
               <li key={i}>
-                <img src={`/images/product${i + 1}.jpg`} alt={`상품 ${i + 1}`} />
+                <img
+                  src={`/images/product${i + 1}.jpg`}
+                  alt={`상품 ${i + 1}`}
+                />
                 <h3>{`상품 ${i + 1}`}</h3>
                 <p>{`₩${(i + 1) * 10000}`}</p>
               </li>
@@ -46,9 +74,7 @@ const Main = () => {
       </section>
 
       <footer>
-        <div className="container">
-          © 2025 쇼핑몰. All rights reserved.
-        </div>
+        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
       </footer>
     </>
   );
