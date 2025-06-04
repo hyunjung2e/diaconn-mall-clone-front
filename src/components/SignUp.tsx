@@ -8,10 +8,10 @@ export default function SignUp() {
     email: '',
     phone: '',
     password: '',
+    password2: '',
     address: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [emailCheckMsg, setEmailCheckMsg] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,7 +23,11 @@ export default function SignUp() {
     if (!formData.email) newErrors.email = '이메일을 입력하세요';
     if (!formData.phone) newErrors.phone = '휴대폰 번호를 입력하세요';
     if (!formData.password) newErrors.password = '비밀번호를 입력하세요';
+    if (!formData.password2) newErrors.password2 = '비밀번호 확인을 입력하세요';
+    if (formData.password !== formData.password2)
+      newErrors.password2 = '비밀번호가 일치하지 않습니다.';
     if (!formData.address) newErrors.address = '주소를 입력하세요';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -75,6 +79,7 @@ export default function SignUp() {
               flexDirection: 'column',
             }}
           >
+            {/* 이름 */}
             <label style={{ fontSize: '14px', fontWeight: '500' }}>이름</label>
             <input
               name="name"
@@ -92,6 +97,7 @@ export default function SignUp() {
               <p style={{ color: 'red', fontSize: '12px' }}>{errors.name}</p>
             )}
           </div>
+          {/* 이메일 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <label style={{ fontSize: '14px', fontWeight: '500' }}>
               이메일
@@ -112,6 +118,7 @@ export default function SignUp() {
                 }}
               />
               <button
+                type="button"
                 onClick={handleCheckEmail}
                 style={{
                   flex: 2,
@@ -137,6 +144,7 @@ export default function SignUp() {
             )}
           </div>
 
+          {/* 휴대폰번호 */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label style={{ fontSize: '14px', fontWeight: '500' }}>
               휴대폰번호
@@ -158,6 +166,7 @@ export default function SignUp() {
               <p style={{ color: 'red', fontSize: '12px' }}>{errors.phone}</p>
             )}
           </div>
+          {/* 비밀번호 */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label style={{ fontSize: '14px', fontWeight: '500' }}>
               비밀번호
@@ -181,6 +190,8 @@ export default function SignUp() {
               </p>
             )}
           </div>
+
+          {/* 비밀번호 확인 */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label style={{ fontSize: '14px', fontWeight: '500' }}>
               비밀번호 확인
@@ -188,6 +199,7 @@ export default function SignUp() {
             <input
               type="password"
               name="password2"
+              value={formData.password2}
               onChange={handleChange}
               style={{
                 width: '450px',
@@ -197,12 +209,13 @@ export default function SignUp() {
                 borderRadius: '4px',
               }}
             />
-            {errors.password && (
+            {errors.password2 && (
               <p style={{ color: 'red', fontSize: '12px' }}>
-                {errors.password}
+                {errors.password2}
               </p>
             )}
           </div>
+          {/* 주소 */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label style={{ fontSize: '14px', fontWeight: '500' }}>주소</label>
             <input
