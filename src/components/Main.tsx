@@ -19,6 +19,14 @@ const Main = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const navigate = useNavigate();
+  const productImages = [
+    'banana.png',
+    'fit.png',
+    'gluet.png',
+    'hotchoco.png',
+    'vege.png',
+    'yogurt.jpg',
+  ];
 
   useEffect(() => {
     getBanners()
@@ -84,10 +92,10 @@ const Main = () => {
         <div className="container">
           <h2>베스트 상품</h2>
           <ul className="product-list">
-            {Array.from({ length: 6 }, (_, i) => (
+            {productImages.map((filename, i) => (
               <li key={i}>
                 <img
-                  src={`/images/product${i + 1}.jpg`}
+                  src={`http://localhost:8080/upload/${filename}`}
                   alt={`상품 ${i + 1}`}
                 />
                 <h3>{`상품 ${i + 1}`}</h3>
