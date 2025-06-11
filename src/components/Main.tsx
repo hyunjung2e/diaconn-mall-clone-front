@@ -1,6 +1,6 @@
 import '../css/main.css';
 import { useState, useEffect } from 'react';
-import { getBanners,getLoggedInUser} from '../api/Api.ts';
+import { getBanners, getLoggedInUser } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
 
 type Banner = {
@@ -17,8 +17,8 @@ type LoginUser = {
 
 const Main = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
- const [user, setUser] = useState<LoginUser | null>(null);
-  const navigate = useNavigate(); 
+  const [user, setUser] = useState<LoginUser | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getBanners()
@@ -27,9 +27,9 @@ const Main = () => {
 
     getLoggedInUser()
       .then((data) => {
-        if (data) setUser(data); 
+        if (data) setUser(data);
       })
-      .catch(() => setUser(null)); 
+      .catch(() => setUser(null));
   }, []);
 
   return (
@@ -41,8 +41,20 @@ const Main = () => {
           </a>
           <div className="header-right">
             <input type="text" placeholder="검색어를 입력해주세요." />
-            {user ?(<><span onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }} >{user.name}님</span><a>로그아웃</a></>):(<a>로그인</a>)}
-            <a href="#" className="cart" onClick={()=> navigate('/cart')}>
+            {user ? (
+              <>
+                <span
+                  onClick={() => navigate('/mypage')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {user.name}님
+                </span>
+                <a>로그아웃</a>
+              </>
+            ) : (
+              <a>로그인</a>
+            )}
+            <a href="#" className="cart" onClick={() => navigate('/cart')}>
               장바구니
             </a>
           </div>
@@ -61,7 +73,7 @@ const Main = () => {
           {banners.map((banner) => (
             <img
               key={banner.id}
-              src={`http://localhost:8080${banner.imageUrl}`}
+              src={`http://localhost:8080${banner.imageUrl}?v=${banner.id}`}
               alt={banner.altText}
             />
           ))}

@@ -17,7 +17,7 @@ export const login = async (loginData: { email: string; password: string }) => {
     credentials: 'include', // 쿠키 포함 옵션
   });
 
-   const data = await response.json();
+  const data = await response.json();
 
   if (!response.ok) {
     throw new Error(data.message || '로그인 실패');
@@ -34,7 +34,7 @@ export const checkEmailDuplicate = async (email: string) => {
 };
 
 export const getBanners = async () => {
-  const response = await fetch(`${API_BASE_URL}/banners`, {
+  const response = await fetch(`${API_BASE_URL}/main`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -49,7 +49,6 @@ export const getBanners = async () => {
   return response.json();
 };
 
-
 // 사용자 정보 조회
 export const getLoggedInUser = async () => {
   const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
@@ -61,5 +60,5 @@ export const getLoggedInUser = async () => {
     return null;
   }
 
-  return response.json(); 
+  return response.json();
 };
