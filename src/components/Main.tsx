@@ -1,3 +1,4 @@
+
 import '../css/main.css';
 import { useState, useEffect } from 'react';
 import { getBanners, getLoggedInUser } from '../api/Api.ts';
@@ -18,7 +19,9 @@ type LoginUser = {
 const Main = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+
   const productImages = [
     'banana.png',
     'fit.png',
@@ -30,7 +33,7 @@ const Main = () => {
 
   useEffect(() => {
     getBanners()
-      .then((data) => setBanners(data))
+      .then(setBanners)
       .catch((err) => console.error(err));
 
     getLoggedInUser()
@@ -40,6 +43,13 @@ const Main = () => {
       .catch(() => setUser(null));
   }, []);
 
+  // 검색 버튼 클릭 또는 Enter 키로 검색 시 /search 페이지로 이동
+  const handleSearch = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(`/search?query=${encodeURIComponent(trimmed)}`);
+  };
+
   return (
     <>
       <header>
@@ -48,7 +58,17 @@ const Main = () => {
             <img src="/img/logo.png" alt="로고" />
           </a>
           <div className="header-right">
-            <input type="text" placeholder="검색어를 입력해주세요." />
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearch();
+              }}
+            />
+            <button onClick={handleSearch}>검색</button>
+
             {user ? (
               <>
                 <span

@@ -62,3 +62,17 @@ export const getLoggedInUser = async () => {
 
   return response.json();
 };
+
+
+export interface Product {
+  id: number;
+  nm: string;
+}
+
+export const searchProducts = async (query: string): Promise<Product[]> => {
+  const response = await fetch(
+    `${API_BASE_URL}/products/search?q=${encodeURIComponent(query)}`
+  );
+  if (!response.ok) throw new Error('검색 실패');
+  return response.json();
+};

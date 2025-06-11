@@ -10,6 +10,7 @@ import Category from './components/Category.tsx';
 import Cart from './components/Cart.tsx';
 import Order from './components/Order.tsx';
 import ProductDetail from './components/ProductDetail.tsx';
+import SearchResult from './components/SearchResult.tsx';
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/myorder" element={<MyOrder />} />
         <Route path="/orderdone" element={<OrderDone />} />
+        <Route path="/search" element={<SearchResult />} />
       </Routes>
     </Router>
   );
