@@ -1,8 +1,9 @@
-
 import '../css/main.css';
 import { useState, useEffect } from 'react';
 import { getBanners, getLoggedInUser } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
+
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 type Banner = {
   id: number;
@@ -101,8 +102,10 @@ const Main = () => {
           {banners.map((banner) => (
             <img
               key={banner.id}
-              src={`http://localhost:8080${banner.imageUrl}?v=${banner.id}`}
+              src={`${baseUrl}${banner.imageUrl}`}
               alt={banner.altText}
+              loading="lazy"
+              style={{ width: '100%', objectFit: 'cover' }}
             />
           ))}
         </div>
@@ -115,8 +118,9 @@ const Main = () => {
             {productImages.map((filename, i) => (
               <li key={i}>
                 <img
-                  src={`http://localhost:8080/upload/${filename}`}
+                  src={`${baseUrl}/api/images/${filename}`}
                   alt={`상품 ${i + 1}`}
+                  loading="lazy"
                 />
                 <h3>{`상품 ${i + 1}`}</h3>
                 <p>{`₩${(i + 1) * 10000}`}</p>

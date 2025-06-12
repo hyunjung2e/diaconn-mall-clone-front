@@ -1,5 +1,6 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL + '/api';
 
+// 회원가입
 export const register = async (userData: any) => {
   const response = await fetch(`${API_BASE_URL}/user/register`, {
     method: 'POST',
@@ -9,6 +10,7 @@ export const register = async (userData: any) => {
   return response.json();
 };
 
+// 로그인
 export const login = async (loginData: { email: string; password: string }) => {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
@@ -26,6 +28,7 @@ export const login = async (loginData: { email: string; password: string }) => {
   return data;
 };
 
+// 이메일 중복 체크
 export const checkEmailDuplicate = async (email: string) => {
   const response = await fetch(
     `${API_BASE_URL}/user/checkemail?email=${encodeURIComponent(email)}`
@@ -33,6 +36,7 @@ export const checkEmailDuplicate = async (email: string) => {
   return await response.json();
 };
 
+// 배너 가져오기
 export const getBanners = async () => {
   const response = await fetch(`${API_BASE_URL}/main`, {
     method: 'GET',
@@ -49,7 +53,7 @@ export const getBanners = async () => {
   return response.json();
 };
 
-// 사용자 정보 조회
+// 로그인된 사용자 정보 조회
 export const getLoggedInUser = async () => {
   const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
     method: 'GET',
@@ -63,7 +67,7 @@ export const getLoggedInUser = async () => {
   return response.json();
 };
 
-
+// 상품 검색
 export interface Product {
   id: number;
   nm: string;
