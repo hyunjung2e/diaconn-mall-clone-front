@@ -81,7 +81,7 @@ const Main = () => {
                 <a>로그아웃</a>
               </>
             ) : (
-              <a>로그인</a>
+              <a href='#' className='login' onClick={() => navigate('/login')}>로그인</a>
             )}
             <a href="#" className="cart" onClick={() => navigate('/cart')}>
               장바구니

@@ -16,7 +16,7 @@ const Login: React.FC = () => {
       alert(`${data.user.name}님 환영합니다!`);
       setEmail('');
       setPassword('');
-      navigate('/main');
+      navigate('/');
     } catch (error: any) {
       alert(error.message || '로그인 실패! 이메일과 비밀번호를 확인해주세요.');
       console.error(error);
