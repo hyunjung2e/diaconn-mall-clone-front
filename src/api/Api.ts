@@ -36,9 +36,9 @@ export const checkEmailDuplicate = async (email: string) => {
   return await response.json();
 };
 
-// 배너 가져오기
+// 메인-배너 가져오기
 export const getBanners = async () => {
-  const response = await fetch(`${API_BASE_URL}/main`, {
+  const response = await fetch(`${API_BASE_URL}/product/banners`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -50,6 +50,22 @@ export const getBanners = async () => {
     );
   }
 
+  return response.json();
+};
+
+// 메인-상품 이미지 가져오기
+export const fetchProductImageUrls = async () => {
+  const response = await fetch(`${API_BASE_URL}/product/products`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(
+      errorData.message || '상품 이미지 목록을 가져오는 데 실패했습니다.'
+    );
+  }
   return response.json();
 };
 
