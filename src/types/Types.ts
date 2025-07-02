@@ -14,3 +14,11 @@ export interface LoginUser {
   name: string;
   email: string;
 }
+
+export interface ProductImage {
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  altText: string;
+}

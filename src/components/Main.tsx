@@ -1,16 +1,12 @@
 import '../css/main.css';
 import { useState, useEffect } from 'react';
-import {
-  getBanners,
-  getLoggedInUser,
-  fetchProductImageUrls,
-} from '../api/Api.ts';
+import { getBanners, getLoggedInUser, fetchProductsInfo } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
-import { Banner, LoginUser } from '../types/Types.ts';
+import { Banner, LoginUser, ProductImage } from '../types/Types.ts';
 
 const Main = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState<ProductImage[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
@@ -26,7 +22,7 @@ const Main = () => {
       })
       .catch(() => setUser(null));
 
-    fetchProductImageUrls()
+    fetchProductsInfo()
       .then(setImageUrls)
       .catch((err) => console.error(err));
   }, []);
@@ -68,7 +64,9 @@ const Main = () => {
                 <a>로그아웃</a>
               </>
             ) : (
-              <a href='#' className='login' onClick={() => navigate('/login')}>로그인</a>
+              <a href="#" className="login" onClick={() => navigate('/login')}>
+                로그인
+              </a>
             )}
             <a href="#" className="cart" onClick={() => navigate('/cart')}>
               장바구니
@@ -99,11 +97,11 @@ const Main = () => {
         <div className="container">
           <h2>베스트 상품</h2>
           <ul className="product-list">
-            {imageUrls.map((url, i) => (
+            {imageUrls.map((e, i) => (
               <li key={i}>
-                <img src={url} alt={`상품 ${i + 1}`} loading="lazy" />
-                <h3>{`상품 ${i + 1}`}</h3>
-                <p>{`₩${(i + 1) * 10000}`}</p>
+                <img src={e.imageUrl} alt={e.altText} loading="lazy" />
+                <h3>{e.name}</h3>
+                <p>{e.price}</p>
               </li>
             ))}
           </ul>

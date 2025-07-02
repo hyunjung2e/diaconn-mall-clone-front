@@ -54,7 +54,7 @@ export const getBanners = async () => {
 };
 
 // 메인-상품 이미지 가져오기
-export const fetchProductImageUrls = async () => {
+export const fetchProductsInfo = async () => {
   const response = await fetch(`${API_BASE_URL}/product/products`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
