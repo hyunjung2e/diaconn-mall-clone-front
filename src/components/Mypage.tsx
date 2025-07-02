@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/login.css';
+import { getLoggedInUser } from '../api/Api.ts';
+import { LoginUser } from '../types/Types.ts';
 
 export default function Mypage() {
   const [formData, setFormData] = useState({
@@ -11,6 +13,17 @@ export default function Mypage() {
     address: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [user, setUser] = useState<LoginUser | null>(null);
+
+  console.log('user', user);
+
+  useEffect(() => {
+    getLoggedInUser()
+      .then((data) => {
+        if (data) setUser(data);
+      })
+      .catch(() => setUser(null));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,7 +70,8 @@ export default function Mypage() {
             <label style={{ fontSize: '14px', fontWeight: '500' }}>이름</label>
             <input
               name="name"
-              value={formData.name}
+              value={user?.name || ''}
+              readOnly
               onChange={handleChange}
               style={{
                 width: '450px',
@@ -65,6 +79,7 @@ export default function Mypage() {
                 marginTop: '4px',
                 border: '1px solid #ccc',
                 borderRadius: '4px',
+                background: 'lightgrey',
               }}
             />
             {errors.name && (
@@ -78,7 +93,8 @@ export default function Mypage() {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={user?.email || ''}
+              readOnly
               onChange={handleChange}
               style={{
                 flex: 8,
@@ -87,6 +103,7 @@ export default function Mypage() {
                 borderRadius: '4px',
                 boxSizing: 'border-box',
                 height: '40px',
+                background: 'lightgrey',
               }}
             />
             {errors.email && (
