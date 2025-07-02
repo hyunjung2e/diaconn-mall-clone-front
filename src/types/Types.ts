@@ -3,22 +3,17 @@ export interface Login {
   password: any;
 }
 
-export interface Banner {
-  id: number;
-  imageUrl: string;
-  altText: string;
-}
-
 export interface LoginUser {
   id: number;
   name: string;
   email: string;
 }
 
-export interface ProductImage {
-  name: string;
-  description: string;
+export interface Product {
+  id: number;
+  nm: string;
+  desc: string;
   price: number;
-  imageUrl: string;
+  imgUrl: string;
   altText: string;
 }

@@ -1,3 +1,4 @@
+import { Product } from '../types/Types.ts';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL + '/api';
 
 // 회원가입
@@ -82,12 +83,6 @@ export const getLoggedInUser = async () => {
 
   return response.json();
 };
-
-// 상품 검색
-export interface Product {
-  id: number;
-  nm: string;
-}
 
 export const searchProducts = async (query: string): Promise<Product[]> => {
   const response = await fetch(
