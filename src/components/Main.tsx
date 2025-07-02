@@ -2,11 +2,11 @@ import '../css/main.css';
 import { useState, useEffect } from 'react';
 import { getBanners, getLoggedInUser, fetchProductsInfo } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
-import { Banner, LoginUser, ProductImage } from '../types/Types.ts';
+import { LoginUser, Product } from '../types/Types.ts';
 
 const Main = () => {
-  const [banners, setBanners] = useState<Banner[]>([]);
-  const [imageUrls, setImageUrls] = useState<ProductImage[]>([]);
+  const [banners, setBanners] = useState<Product[]>([]);
+  const [productInfo, setProductInfo] = useState<Product[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Main = () => {
       .catch(() => setUser(null));
 
     fetchProductsInfo()
-      .then(setImageUrls)
+      .then(setProductInfo)
       .catch((err) => console.error(err));
   }, []);
 
@@ -85,7 +85,7 @@ const Main = () => {
           {banners.map((banner) => (
             <img
               key={banner.id}
-              src={banner.imageUrl}
+              src={banner.imgUrl}
               alt={banner.altText}
               loading="lazy"
               style={{ width: '100%', objectFit: 'cover' }}
@@ -97,10 +97,15 @@ const Main = () => {
         <div className="container">
           <h2>베스트 상품</h2>
           <ul className="product-list">
-            {imageUrls.map((e, i) => (
+            {productInfo.map((e, i) => (
               <li key={i}>
-                <img src={e.imageUrl} alt={e.altText} loading="lazy" />
-                <h3>{e.name}</h3>
+                <img
+                  src={e.imgUrl}
+                  alt={e.altText}
+                  loading="lazy"
+                  onClick={() => navigate(`/productDetail?id=${e.id}`)}
+                />
+                <h3>{e.nm}</h3>
                 <p>{e.price}</p>
               </li>
             ))}
