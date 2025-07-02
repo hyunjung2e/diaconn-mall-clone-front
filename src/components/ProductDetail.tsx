@@ -1,31 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import '../css/product_detail.css';
+import { getProductDetail } from '../api/Api.ts'; 
+
+interface Product {
+    id: number;
+    nm: string; 
+    price: number;
+    desc: string;
+    imgUrl: string;
+}
 
 const ProductDetail: React.FC = () => {
-    const [product, setProduct] = useState({
-        id: 1,
-        name: 'P8',
-        price: 10000,
-        description: '굿굿...',
-        image: './img/product.jpg',
-    });
+    const { id } = useParams(); // URL에서 id 추출
+    const [product, setProduct] = useState<Product | null>(null);
+
+    useEffect(() => {
+        if (!id) return;
+
+        getProductDetail(Number(id)) 
+            .then(data => setProduct(data))
+            .catch(err => {
+                console.error('상품 정보 불러오기 실패:', err);
+            });
+    }, [id]);
 
     const handleAddToCart = () => {
-        console.log(`${product.name}이(가) 장바구니에 추가되었습니다.`);
-        // 장바구니에 상품을 추가하는 로직을 여기에 작성할 수 있습니다.
+        if (product) {
+            console.log(`${product.nm}이(가) 장바구니에 추가되었습니다.`);
+        }
     };
 
     const handleBuyNow = () => {
-        console.log(`${product.name}을(를) 바로 구매합니다.`);
-        // 바로 구매 로직을 여기에 작성할 수 있습니다.
+        if (product) {
+            console.log(`${product.nm}을(를) 바로 구매합니다.`);
+        }
     };
+
+    if (!product) return <div>로딩 중...</div>;
 
     return (
         <div>
             <header>
                 <div className="container">
                     <a href="#" className="logo">
-                        <img src="./img/logo.png" alt="로고" />
+                        <img src="/img/logo.png" alt="로고" />
                     </a>
                     <div className="header-right">
                         <input type="text" placeholder="검색어를 입력해주세요." />
@@ -44,13 +63,13 @@ const ProductDetail: React.FC = () => {
 
             <div className="product-container">
                 <div className="product-image">
-                    <img src={product.image} alt="상품 이미지" />
+                    <img src={product.imgUrl} alt={product.nm} />
                 </div>
 
                 <div className="product-details">
-                    <h1>{product.name}</h1>
+                    <h1>{product.nm}</h1>
                     <p className="price">가격: {product.price.toLocaleString()}원</p>
-                    <p>설명: {product.description}</p>
+                    <p>설명: {product.desc}</p>
 
                     <button className="btn add-to-cart" onClick={handleAddToCart}>
                         장바구니 담기
@@ -62,7 +81,7 @@ const ProductDetail: React.FC = () => {
             </div>
 
             <footer>
-                <p>© 2025 쇼핑몰. All rights reserved.</p>
+                <p>© 2025 쇼핑몰</p>
             </footer>
         </div>
     );

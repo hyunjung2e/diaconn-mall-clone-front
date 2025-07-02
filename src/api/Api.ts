@@ -96,3 +96,17 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
   if (!response.ok) throw new Error('검색 실패');
   return response.json();
 };
+// 상품 상세 조회
+export const getProductDetail = async (productId: number) => {
+  const response = await fetch(`${API_BASE_URL}/product/${productId}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || '상품 정보를 가져오는 데 실패했습니다.');
+  }
+
+  return response.json();
+};
