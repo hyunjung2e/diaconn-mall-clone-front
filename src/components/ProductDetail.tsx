@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
 import { getProductDetail } from '../api/Api.ts';
+import { LoginUser } from '../types/Types.ts'; 
 
 interface Product {
   id: number;
@@ -12,46 +13,76 @@ interface Product {
 }
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams(); // URL에서 id 추출
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 추가된 상태
+  const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState<LoginUser | null>(null);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || isNaN(Number(id))) {
+      setError('유효하지 않은 상품 ID입니다.');
+      setLoading(false);
+      return;
+    }
 
     getProductDetail(Number(id))
       .then((data) => setProduct(data))
-      .catch((err) => {
-        console.error('상품 정보 불러오기 실패:', err);
-      });
+      .catch((err: any) =>
+        setError(err.message || '상품 정보를 불러오는 데 실패했습니다.')
+      )
+      .finally(() => setLoading(false));
   }, [id]);
 
-  const handleAddToCart = () => {
-    if (product) {
-      console.log(`${product.nm}이(가) 장바구니에 추가되었습니다.`);
-    }
-  };
-
-  const handleBuyNow = () => {
-    if (product) {
-      console.log(`${product.nm}을(를) 바로 구매합니다.`);
-    }
-  };
-
-  if (!product) return <div>로딩 중...</div>;
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div style={{ color: 'red' }}>오류: {error}</div>;
+  if (!product) return <div>상품을 찾을 수 없습니다.</div>;
 
   return (
-    <div>
+    <>
       <header>
         <div className="container">
-          <a href="#" className="logo">
+          <a className="logo" onClick={() => navigate('/')}>
             <img src="/img/logo.png" alt="로고" />
           </a>
           <div className="header-right">
-            <input type="text" placeholder="검색어를 입력해주세요." />
-            <a href="#" className="login">
-              로그인
-            </a>
-            <a href="#" className="cart">
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearch();
+              }}
+            />
+            <button onClick={handleSearch}>검색</button>
+
+            {user ? (
+              <>
+                <span
+                  onClick={() => navigate('/mypage')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {user.name}님
+                </span>
+                <a onClick={() => alert('로그아웃 기능 구현 필요')}>로그아웃</a>
+              </>
+            ) : (
+              <a className="login" onClick={() => navigate('/login')}>
+                로그인
+              </a>
+            )}
+            <a className="cart" onClick={() => navigate('/cart')}>
               장바구니
             </a>
           </div>
@@ -75,19 +106,21 @@ const ProductDetail: React.FC = () => {
           <p className="price">가격: {product.price.toLocaleString()}원</p>
           <p>설명: {product.desc}</p>
 
-          <button className="btn add-to-cart" onClick={handleAddToCart}>
+          <button
+            className="btn add-to-cart"
+            onClick={() => alert(`${product.nm} 장바구니 담기`)}
+          >
             장바구니 담기
           </button>
-          <button className="btn buy-now" onClick={handleBuyNow}>
+          <button
+            className="btn buy-now"
+            onClick={() => alert(`${product.nm} 바로 구매`)}
+          >
             바로 구매
           </button>
         </div>
       </div>
-
-      <footer>
-        <p>© 2025 쇼핑몰</p>
-      </footer>
-    </div>
+    </>
   );
 };
 

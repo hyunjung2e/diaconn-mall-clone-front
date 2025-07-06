@@ -64,11 +64,11 @@ const Main = () => {
                 <a>로그아웃</a>
               </>
             ) : (
-              <a href="#" className="login" onClick={() => navigate('/login')}>
+              <a  className="login" onClick={() => navigate('/login')}>
                 로그인
               </a>
             )}
-            <a href="#" className="cart" onClick={() => navigate('/cart')}>
+            <a className="cart" onClick={() => navigate('/cart')}>
               장바구니
             </a>
           </div>
@@ -103,7 +103,7 @@ const Main = () => {
                   src={e.imgUrl}
                   alt={e.altText}
                   loading="lazy"
-                  onClick={() => navigate(`/productDetail?id=${e.id}`)}
+                  onClick={() => navigate(`/productDetail/${e.id}`)}
                 />
                 <h3>{e.nm}</h3>
                 <p>{e.price}</p>

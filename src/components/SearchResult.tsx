@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { searchProducts, Product } from '../api/Api.ts';
+import { Product } from '../types/Types.ts';  
+import { searchProducts } from '../api/Api.ts';
 
 import '../css/search_result.css';
 
@@ -48,7 +49,7 @@ const SearchResult = () => {
       {!loading && results.length > 0 && (
         <ul className="product-list">
           {results.map((item) => (
-            <li key={item.id} className="product-item" onClick={() => navigate(`/product/${item.id}`)}>
+            <li key={item.id} className="product-item" onClick={() => navigate(`/productDetail/${item.id}`)}>
               <div className="product-name">{item.nm}</div>
             </li>
           ))}
