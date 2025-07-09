@@ -64,7 +64,7 @@ const Main = () => {
                 <a>로그아웃</a>
               </>
             ) : (
-              <a  className="login" onClick={() => navigate('/login')}>
+              <a className="login" onClick={() => navigate('/login')}>
                 로그인
               </a>
             )}
@@ -75,10 +75,10 @@ const Main = () => {
         </div>
       </header>
       <nav className="menu">
-        <a href="#">메뉴1</a>
-        <a href="#">메뉴2</a>
-        <a href="#">메뉴3</a>
-        <a href="#">메뉴4</a>
+        <a href="#">간편식</a>
+        <a href="#">식단</a>
+        <a href="#">음료</a>
+        <a href="#">의료기기</a>
       </nav>
       <main>
         <div className="container">
@@ -106,7 +106,7 @@ const Main = () => {
                   onClick={() => navigate(`/productDetail/${e.id}`)}
                 />
                 <h3>{e.nm}</h3>
-                <p>{e.price}</p>
+                <p>{e.price}원</p>
               </li>
             ))}
           </ul>
