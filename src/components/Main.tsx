@@ -12,11 +12,19 @@ const Main = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getBanners().then(setBanners).catch(console.error);
+    getBanners()
+      .then(setBanners)
+      .catch((err) => console.error(err));
+
     getLoggedInUser()
-      .then((data) => data && setUser(data))
+      .then((data) => {
+        if (data) setUser(data);
+      })
       .catch(() => setUser(null));
-    fetchProductsInfo().then(setProductInfo).catch(console.error);
+
+    fetchProductsInfo()
+      .then(setProductInfo)
+      .catch((err) => console.error(err));
   }, []);
 
   const handleSearch = () => {
@@ -43,9 +51,13 @@ const Main = () => {
               }}
             />
             <button onClick={handleSearch}>검색</button>
+
             {user ? (
               <>
-                <span onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }}>
+                <span
+                  onClick={() => navigate('/mypage')}
+                  style={{ cursor: 'pointer' }}
+                >
                   {user.name}님
                 </span>
                 <a>로그아웃</a>
@@ -61,14 +73,12 @@ const Main = () => {
           </div>
         </div>
       </header>
-
       <nav className="menu">
-        <a href="#">기기 · 연속혈당</a>
-        <a href="#">식품</a>
-        <a href="#">음료</a>
-        <a href="#">이벤트</a>
+        <a href="#">메뉴1</a>
+        <a href="#">메뉴2</a>
+        <a href="#">메뉴3</a>
+        <a href="#">메뉴4</a>
       </nav>
-
       <main>
         <div className="container">
           {banners.map((banner) => (
@@ -114,9 +124,9 @@ const Main = () => {
                       <p className="product-name">{e.nm}</p>
                       <p className="price">₩{e.price.toLocaleString()}</p>
                     </div>
-                  </li>
-                ))}
-              </ul>
+              </li>
+            ))}
+          </ul>
             </div>
           ))}
         </div>

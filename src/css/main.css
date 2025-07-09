@@ -67,6 +67,7 @@ nav.menu a {
   text-decoration: none;
   color: rgb(66, 66, 66);
   font-weight: bold;
+  cursor: pointer;
 }
 
 nav.menu a:hover {
