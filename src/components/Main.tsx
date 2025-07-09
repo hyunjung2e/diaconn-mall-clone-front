@@ -12,22 +12,13 @@ const Main = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getBanners()
-      .then(setBanners)
-      .catch((err) => console.error(err));
-
+    getBanners().then(setBanners).catch(console.error);
     getLoggedInUser()
-      .then((data) => {
-        if (data) setUser(data);
-      })
+      .then((data) => data && setUser(data))
       .catch(() => setUser(null));
-
-    fetchProductsInfo()
-      .then(setProductInfo)
-      .catch((err) => console.error(err));
+    fetchProductsInfo().then(setProductInfo).catch(console.error);
   }, []);
 
-  // 검색 버튼 클릭 또는 Enter 키로 검색 시 /search 페이지로 이동
   const handleSearch = () => {
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
@@ -52,13 +43,9 @@ const Main = () => {
               }}
             />
             <button onClick={handleSearch}>검색</button>
-
             {user ? (
               <>
-                <span
-                  onClick={() => navigate('/mypage')}
-                  style={{ cursor: 'pointer' }}
-                >
+                <span onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }}>
                   {user.name}님
                 </span>
                 <a>로그아웃</a>
@@ -74,12 +61,14 @@ const Main = () => {
           </div>
         </div>
       </header>
+
       <nav className="menu">
-        <a href="#">간편식</a>
-        <a href="#">식단</a>
+        <a href="#">기기 · 연속혈당</a>
+        <a href="#">식품</a>
         <a href="#">음료</a>
-        <a href="#">의료기기</a>
+        <a href="#">이벤트</a>
       </nav>
+
       <main>
         <div className="container">
           {banners.map((banner) => (
@@ -93,25 +82,46 @@ const Main = () => {
           ))}
         </div>
       </main>
-      <section>
+
+      <section className="product-section">
         <div className="container">
-          <h2>베스트 상품</h2>
-          <ul className="product-list">
-            {productInfo.map((e, i) => (
-              <li key={i}>
-                <img
-                  src={e.imgUrl}
-                  alt={e.altText}
-                  loading="lazy"
-                  onClick={() => navigate(`/productDetail/${e.id}`)}
-                />
-                <h3>{e.nm}</h3>
-                <p>{e.price}원</p>
-              </li>
-            ))}
-          </ul>
+          {[
+            {
+              title: '베스트 상품',
+              description: '많은 고객들이 선택한 인기 상품들을 소개합니다.',
+              products: productInfo.slice(0, 3),
+              boxClass: 'best',
+            },
+            {
+              title: 'NEW 상품',
+              description: '새롭게 등록된 따끈따끈한 상품들을 만나보세요!',
+              products: productInfo.slice(3, 6),
+              boxClass: 'new',
+            },
+          ].map((section, idx) => (
+            <div key={idx} className="product-row">
+              <div className={`product-description-box ${section.boxClass}`}>
+                <h2>{section.title}</h2>
+                <p>{section.description}</p>
+              </div>
+              <ul className="product-list three-cols">
+                {section.products.map((e, i) => (
+                  <li key={i} className="product-item" onClick={() => navigate(`/productDetail/${e.id}`)}>
+                    <div className="product-image-container">
+                      <img src={e.imgUrl} alt={e.altText} loading="lazy" />
+                    </div>
+                    <div className="product-info">
+                      <p className="product-name">{e.nm}</p>
+                      <p className="price">₩{e.price.toLocaleString()}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
+
       <footer>
         <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
       </footer>
