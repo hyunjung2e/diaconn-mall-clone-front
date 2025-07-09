@@ -66,6 +66,7 @@ nav.menu a {
   text-decoration: none;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* 메인 배너 */
