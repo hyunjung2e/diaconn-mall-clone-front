@@ -1,7 +1,12 @@
 import '../css/main.css';
 import { useState, useEffect } from 'react';
-import { getBanners, getLoggedInUser, fetchProductsInfo } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
+import {
+  getBanners,
+  getLoggedInUser,
+  fetchProductsInfo,
+  fetchCategoryProducts,
+} from '../api/Api.ts';
 import { LoginUser, Product } from '../types/Types.ts';
 
 const Main = () => {
@@ -10,8 +15,18 @@ const Main = () => {
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [categoryId, setCategoryId] = useState('');
 
   useEffect(() => {
+    if (categoryId) {
+      fetchCategoryProducts(categoryId)
+        .then(setProductInfo)
+        .catch((err) => console.error(err));
+    } else {
+      fetchProductsInfo()
+        .then(setProductInfo)
+        .catch((err) => console.error(err));
+    }
     getBanners()
       .then(setBanners)
       .catch((err) => console.error(err));
@@ -21,11 +36,7 @@ const Main = () => {
         if (data) setUser(data);
       })
       .catch(() => setUser(null));
-
-    fetchProductsInfo()
-      .then(setProductInfo)
-      .catch((err) => console.error(err));
-  }, []);
+  }, [categoryId]);
 
   // 검색 버튼 클릭 또는 Enter 키로 검색 시 /search 페이지로 이동
   const handleSearch = () => {
@@ -34,11 +45,15 @@ const Main = () => {
     navigate(`/search?query=${encodeURIComponent(trimmed)}`);
   };
 
+  const handleCategory = (categoryId: string) => {
+    setCategoryId(categoryId);
+  };
+
   return (
     <>
       <header>
         <div className="container">
-          <a href="#" className="logo">
+          <a href="/" className="logo">
             <img src="/img/logo.png" alt="로고" />
           </a>
           <div className="header-right">
@@ -75,10 +90,10 @@ const Main = () => {
         </div>
       </header>
       <nav className="menu">
-        <a href="#">간편식</a>
-        <a href="#">식단</a>
-        <a href="#">음료</a>
-        <a href="#">의료기기</a>
+        <a onClick={() => handleCategory('readymeal')}>간편식</a>
+        <a onClick={() => handleCategory('food')}>식단</a>
+        <a onClick={() => handleCategory('drink')}>음료</a>
+        <a onClick={() => handleCategory('devices')}>의료기기</a>
       </nav>
       <main>
         <div className="container">

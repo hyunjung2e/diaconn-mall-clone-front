@@ -37,6 +37,8 @@ export const checkEmailDuplicate = async (email: string) => {
   return await response.json();
 };
 
+// ***** 메인 & 상품 관련 *****
+
 // 메인-배너 가져오기
 export const getBanners = async () => {
   const response = await fetch(`${API_BASE_URL}/product/banners`, {
@@ -70,6 +72,42 @@ export const fetchProductsInfo = async () => {
   return response.json();
 };
 
+// 메인-카테고리별 상품 이미지 가져오기
+export const fetchCategoryProducts = async (categoryId: string) => {
+  const response = await fetch(
+    `${API_BASE_URL}/product/products/${categoryId}`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(
+      errorData.message || '카테고리별 상품 목록을 가져오는 데 실패했습니다.'
+    );
+  }
+  return response.json();
+};
+
+// 상품 상세 조회
+export const getProductDetail = async (productId: number) => {
+  const response = await fetch(`${API_BASE_URL}/product/${productId}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(
+      errorData.message || '상품 정보를 불러오는 데 실패했습니다.'
+    );
+  }
+
+  return response.json();
+};
+
 // 로그인된 사용자 정보 조회
 export const getLoggedInUser = async () => {
   const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
@@ -90,20 +128,5 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
     `${API_BASE_URL}/product/search?q=${encodeURIComponent(query)}`
   );
   if (!response.ok) throw new Error('검색 실패');
-  return response.json();
-};
-
-// 상품 상세 조회
-export const getProductDetail = async (productId: number) => {
-  const response = await fetch(`${API_BASE_URL}/product/${productId}`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || '상품 정보를 불러오는 데 실패했습니다.');
-  }
-
   return response.json();
 };
