@@ -2,15 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
 import { getProductDetail } from '../api/Api.ts';
-import { LoginUser } from '../types/Types.ts'; 
-
-interface Product {
-  id: number;
-  nm: string;
-  price: number;
-  desc: string;
-  imgUrl: string;
-}
+import { LoginUser, Product } from '../types/Types.ts';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
