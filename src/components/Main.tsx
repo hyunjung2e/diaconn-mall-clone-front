@@ -74,10 +74,10 @@ const Main = () => {
         </div>
       </header>
       <nav className="menu">
-        <a href="#">메뉴1</a>
-        <a href="#">메뉴2</a>
-        <a href="#">메뉴3</a>
-        <a href="#">메뉴4</a>
+        <a href="#">간편식</a>
+        <a href="#">식단</a>
+        <a href="#">음료</a>
+        <a href="#">의료기기</a>
       </nav>
       <main>
         <div className="container">
