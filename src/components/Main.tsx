@@ -1,7 +1,12 @@
 import '../css/main.css';
 import { useState, useEffect } from 'react';
-import { getBanners, getLoggedInUser, fetchProductsInfo } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
+import {
+  getBanners,
+  getLoggedInUser,
+  fetchProductsInfo,
+  fetchCategoryProducts,
+} from '../api/Api.ts';
 import { LoginUser, Product } from '../types/Types.ts';
 
 const Main = () => {
@@ -10,8 +15,18 @@ const Main = () => {
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [categoryId, setCategoryId] = useState('');
 
   useEffect(() => {
+    if (categoryId) {
+      fetchCategoryProducts(categoryId)
+        .then(setProductInfo)
+        .catch((err) => console.error(err));
+    } else {
+      fetchProductsInfo()
+        .then(setProductInfo)
+        .catch((err) => console.error(err));
+    }
     getBanners()
       .then(setBanners)
       .catch((err) => console.error(err));
@@ -21,23 +36,24 @@ const Main = () => {
         if (data) setUser(data);
       })
       .catch(() => setUser(null));
+  }, [categoryId]);
 
-    fetchProductsInfo()
-      .then(setProductInfo)
-      .catch((err) => console.error(err));
-  }, []);
-
+  // 검색 버튼 클릭 또는 Enter 키로 검색 시 /search 페이지로 이동
   const handleSearch = () => {
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
     navigate(`/search?query=${encodeURIComponent(trimmed)}`);
   };
 
+  const handleCategory = (categoryId: string) => {
+    setCategoryId(categoryId);
+  };
+
   return (
     <>
       <header>
         <div className="container">
-          <a href="#" className="logo">
+          <a href="/" className="logo">
             <img src="/img/logo.png" alt="로고" />
           </a>
           <div className="header-right">
@@ -74,10 +90,10 @@ const Main = () => {
         </div>
       </header>
       <nav className="menu">
-        <a href="#">간편식</a>
-        <a href="#">식단</a>
-        <a href="#">음료</a>
-        <a href="#">의료기기</a>
+        <a onClick={() => handleCategory('readymeal')}>간편식</a>
+        <a onClick={() => handleCategory('food')}>식단</a>
+        <a onClick={() => handleCategory('drink')}>음료</a>
+        <a onClick={() => handleCategory('devices')}>의료기기</a>
       </nav>
       <main>
         <div className="container">
@@ -92,46 +108,25 @@ const Main = () => {
           ))}
         </div>
       </main>
-
-      <section className="product-section">
+      <section>
         <div className="container">
-          {[
-            {
-              title: '베스트 상품',
-              description: '많은 고객들이 선택한 인기 상품들을 소개합니다.',
-              products: productInfo.slice(0, 3),
-              boxClass: 'best',
-            },
-            {
-              title: 'NEW 상품',
-              description: '새롭게 등록된 따끈따끈한 상품들을 만나보세요!',
-              products: productInfo.slice(3, 6),
-              boxClass: 'new',
-            },
-          ].map((section, idx) => (
-            <div key={idx} className="product-row">
-              <div className={`product-description-box ${section.boxClass}`}>
-                <h2>{section.title}</h2>
-                <p>{section.description}</p>
-              </div>
-              <ul className="product-list three-cols">
-                {section.products.map((e, i) => (
-                  <li key={i} className="product-item" onClick={() => navigate(`/productDetail/${e.id}`)}>
-                    <div className="product-image-container">
-                      <img src={e.imgUrl} alt={e.altText} loading="lazy" />
-                    </div>
-                    <div className="product-info">
-                      <p className="product-name">{e.nm}</p>
-                      <p className="price">₩{e.price.toLocaleString()}</p>
-                    </div>
+          <h2>베스트 상품</h2>
+          <ul className="product-list">
+            {productInfo.map((e, i) => (
+              <li key={i}>
+                <img
+                  src={e.imgUrl}
+                  alt={e.altText}
+                  loading="lazy"
+                  onClick={() => navigate(`/productDetail/${e.id}`)}
+                />
+                <h3>{e.nm}</h3>
+                <p>{e.price}원</p>
               </li>
             ))}
           </ul>
-            </div>
-          ))}
         </div>
       </section>
-
       <footer>
         <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
       </footer>
