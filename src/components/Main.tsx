@@ -90,10 +90,10 @@ const Main = () => {
         </div>
       </header>
       <nav className="menu">
-        <a onClick={() => handleCategory('readymeal')}>간편식</a>
-        <a onClick={() => handleCategory('food')}>식단</a>
-        <a onClick={() => handleCategory('drink')}>음료</a>
-        <a onClick={() => handleCategory('devices')}>의료기기</a>
+        <a onClick={() => handleCategory('0')}>간편식</a>
+        <a onClick={() => handleCategory('1')}>식단</a>
+        <a onClick={() => handleCategory('2')}>음료</a>
+        <a onClick={() => handleCategory('3')}>의료기기</a>
       </nav>
       <main>
         <div className="container">
