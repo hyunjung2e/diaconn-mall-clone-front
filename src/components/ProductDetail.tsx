@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
 import { getProductDetail } from '../api/Api.ts';
-import { LoginUser } from '../types/Types.ts'; 
+import { LoginUser } from '../types/Types.ts';
 
 interface Product {
   id: number;
   nm: string;
   price: number;
-  desc: string;
+  contentDesc: string;
   imgUrl: string;
 }
 
@@ -104,7 +104,7 @@ const ProductDetail: React.FC = () => {
         <div className="product-details">
           <h1>{product.nm}</h1>
           <p className="price">가격: {product.price.toLocaleString()}원</p>
-          <p>설명: {product.desc}</p>
+          <p>설명: {product.contentDesc}</p>
 
           <button
             className="btn add-to-cart"
