@@ -1,6 +1,8 @@
 import { Product } from '../types/Types.ts';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL + '/api';
 
+// ***** 유저 관련 *****
+
 // 회원가입
 export const register = async (userData: any) => {
   const response = await fetch(`${API_BASE_URL}/user/register`, {
@@ -9,6 +11,14 @@ export const register = async (userData: any) => {
     body: JSON.stringify(userData),
   });
   return response.json();
+};
+
+// 이메일 중복 체크
+export const checkEmailDuplicate = async (email: string) => {
+  const response = await fetch(
+    `${API_BASE_URL}/user/checkemail?email=${encodeURIComponent(email)}`
+  );
+  return await response.json();
 };
 
 // 로그인
@@ -29,12 +39,35 @@ export const login = async (loginData: { email: string; password: string }) => {
   return data;
 };
 
-// 이메일 중복 체크
-export const checkEmailDuplicate = async (email: string) => {
-  const response = await fetch(
-    `${API_BASE_URL}/user/checkemail?email=${encodeURIComponent(email)}`
-  );
-  return await response.json();
+// 로그인된 사용자 정보 조회
+export const getLoggedInUser = async () => {
+  const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
+    method: 'GET',
+    headers: { 'Cache-control': 'no-store', Pragma: 'no-cache' },
+    credentials: 'include', // 쿠키 포함 (세션 유지용)
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
+};
+
+// 마이페이지 회원 정보 수정
+export const updateUser = async (userData: any) => {
+  const response = await fetch(`${API_BASE_URL}/user/update`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
+    credentials: 'include', // 쿠키 포함 (세션 유지용)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || '회원 정보 수정 실패');
+  }
+  return response.json();
 };
 
 // ***** 메인 & 상품 관련 *****
@@ -48,9 +81,7 @@ export const getBanners = async () => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(
-      errorData.message || '배너 목록을 가져오는 데 실패했습니다.'
-    );
+    throw new Error(errorData.message || '배너 목록을 가져오는 데 실패했습니다.');
   }
 
   return response.json();
@@ -65,28 +96,21 @@ export const fetchProductsInfo = async () => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(
-      errorData.message || '상품 이미지 목록을 가져오는 데 실패했습니다.'
-    );
+    throw new Error(errorData.message || '상품 이미지 목록을 가져오는 데 실패했습니다.');
   }
   return response.json();
 };
 
 // 메인-카테고리별 상품 이미지 가져오기
 export const fetchCategoryProducts = async (categoryId: string) => {
-  const response = await fetch(
-    `${API_BASE_URL}/product/products/${categoryId}`,
-    {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  const response = await fetch(`${API_BASE_URL}/product/products/${categoryId}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(
-      errorData.message || '카테고리별 상품 목록을 가져오는 데 실패했습니다.'
-    );
+    throw new Error(errorData.message || '카테고리별 상품 목록을 가져오는 데 실패했습니다.');
   }
   return response.json();
 };
@@ -100,23 +124,7 @@ export const getProductDetail = async (productId: number) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(
-      errorData.message || '상품 정보를 불러오는 데 실패했습니다.'
-    );
-  }
-
-  return response.json();
-};
-
-// 로그인된 사용자 정보 조회
-export const getLoggedInUser = async () => {
-  const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
-    method: 'GET',
-    credentials: 'include', // 쿠키 포함 (세션 유지용)
-  });
-
-  if (!response.ok) {
-    return null;
+    throw new Error(errorData.message || '상품 정보를 불러오는 데 실패했습니다.');
   }
 
   return response.json();
@@ -124,9 +132,7 @@ export const getLoggedInUser = async () => {
 
 // 상품 검색
 export const searchProducts = async (query: string): Promise<Product[]> => {
-  const response = await fetch(
-    `${API_BASE_URL}/product/search?q=${encodeURIComponent(query)}`
-  );
+  const response = await fetch(`${API_BASE_URL}/product/search?q=${encodeURIComponent(query)}`);
   if (!response.ok) throw new Error('검색 실패');
   return response.json();
 };
