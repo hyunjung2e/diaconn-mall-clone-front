@@ -5,8 +5,6 @@ import { LoginUser } from '../types/Types.ts';
 
 export default function Mypage() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
     phone: '',
     password: '',
     password2: '',
@@ -15,8 +13,7 @@ export default function Mypage() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [user, setUser] = useState<LoginUser | null>(null);
 
-  console.log('user', user);
-
+  // 로그인한 유저 정보 가져오기
   useEffect(() => {
     getLoggedInUser()
       .then((data) => {
@@ -25,194 +22,115 @@ export default function Mypage() {
       .catch(() => setUser(null));
   }, []);
 
+  // 입력값 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // 유효성 검사
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!formData.name) newErrors.name = '이름을 입력하세요';
-    if (!formData.email) newErrors.email = '이메일을 입력하세요';
     if (!formData.phone) newErrors.phone = '휴대폰 번호를 입력하세요';
     if (!formData.password) newErrors.password = '비밀번호를 입력하세요';
-    if (!formData.password2)
-      newErrors.password2 = '비밀번호가 일치하지 않습니다';
-    if (!formData.address) newErrors.address = '주소를 입력하세요';
+    if (!formData.password2) newErrors.password2 = '비밀번호가 일치하지 않습니다';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // 폼 제출 핸들러
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      console.log('User Data:', formData);
+      console.log('회원정보 수정 데이터:', formData);
     }
   };
 
   return (
     <div className="body">
       <div className="login-signup-box">
-        <h2
-          style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '30px' }}
-        >
-          마이페이지
-        </h2>
+        <h2 className="mypage-title">마이페이지</h2>
         <form
           onSubmit={handleSubmit}
           style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>이름</label>
+          {/* 이름 */}
+          <div className="mypage-row">
+            <label className="mypage-label">이름</label>
             <input
-              name="name"
+              className="mypage-disabled-input"
               value={user?.name || ''}
               readOnly
               onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                background: 'lightgrey',
-              }}
             />
-            {errors.name && (
-              <p style={{ color: 'red', fontSize: '12px' }}>{errors.name}</p>
-            )}
+            {errors.name && <p>{errors.name}</p>}
           </div>
+
+          {/* 이메일 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              이메일
-            </label>
+            <label className="mypage-label">이메일</label>
             <input
-              type="email"
-              name="email"
+              className="mypage-disabled-input"
               value={user?.email || ''}
               readOnly
               onChange={handleChange}
-              style={{
-                flex: 8,
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                boxSizing: 'border-box',
-                height: '40px',
-                background: 'lightgrey',
-              }}
             />
-            {errors.email && (
-              <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
-                {errors.email}
-              </p>
-            )}
+            {errors.email && <p>{errors.email}</p>}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              휴대폰번호
-            </label>
+          {/* 휴대폰번호(필수) */}
+          <div className="mypage-row">
+            <label className="mypage-label">휴대폰번호</label>
             <input
+              className="mypage-input"
               type="phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
             />
-            {errors.phone && (
-              <p style={{ color: 'red', fontSize: '12px' }}>{errors.phone}</p>
-            )}
+            {errors.phone && <p className="mypage-errors">{errors.phone}</p>}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              비밀번호
-            </label>
+
+          {/* 비밀번호(필수) */}
+          <div className="mypage-row">
+            <label className="mypage-label">비밀번호</label>
             <input
+              className="mypage-input"
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
             />
-            {errors.password && (
-              <p style={{ color: 'red', fontSize: '12px' }}>
-                {errors.password}
-              </p>
-            )}
+            {errors.password && <p className="mypage-errors">{errors.password}</p>}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              비밀번호 확인
-            </label>
+
+          {/* 비밀번호 확인(필수) */}
+          <div className="mypage-row">
+            <label className="mypage-label">비밀번호 확인</label>
             <input
+              className="mypage-input"
               type="password"
               name="password2"
               value={formData.password2}
               onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
             />
-            {errors.password && (
-              <p style={{ color: 'red', fontSize: '12px' }}>
-                {errors.password}
-              </p>
-            )}
+            {errors.password && <p className="mypage-errors">{errors.password}</p>}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>주소</label>
+
+          {/* 주소(선택) */}
+          <div className="mypage-row">
+            <label className="mypage-label">주소</label>
             <input
+              className="mypage-input"
               type="address"
               name="address"
               value={formData.address}
               onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
             />
-            {errors.address && (
-              <p style={{ color: 'red', fontSize: '12px' }}>{errors.address}</p>
-            )}
+            {errors.address && <p className="mypage-errors">{errors.address}</p>}
           </div>
-          <button
-            type="submit"
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginTop: '10px',
-              marginBottom: '30px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+
+          {/* 수정 버튼 */}
+          <button className="submit-button" type="submit">
             회원정보 수정
           </button>
         </form>

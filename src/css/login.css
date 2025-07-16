@@ -21,7 +21,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.logo{
+.logo {
   display: block;
   width: 200px;
   margin-top: 50px;
@@ -36,7 +36,7 @@
 .login-signup-input {
   width: 80%;
   height: 50px;
-  padding-left: 15px; 
+  padding-left: 15px;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -79,23 +79,74 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding-left: 40px; 
+  padding-left: 40px;
 }
 
 .email-button img {
   position: absolute;
-  left: 10px;   
+  left: 10px;
   height: 24px;
   width: 25px;
   top: 50%;
-  transform: translateY(-50%); 
+  transform: translateY(-50%);
   margin: 0;
 }
 
-.signup_link{
+.signup_link {
   text-decoration: none;
   color: inherit;
   display: block;
   text-align: right;
   border-bottom: 2px solid #1fc4be;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background-color: #00796b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 마이페이지 */
+.mypage-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.mypage-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.mypage-disabled-input {
+  width: 450px;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: lightgrey;
+}
+
+.mypage-input {
+  width: 450px;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.mypage-errors {
+  color: red;
+  font-size: 12px;
+}
+
+.mypage-label {
+  font-size: 14px;
+  font-weight: 500;
 }
