@@ -1,0 +1,76 @@
+header {
+  background-color: #ffffff; 
+  padding: 18px 0;
+  height: 100px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+header .container {
+  display: flex;
+  height: 100px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 로고 */
+header .logo img {
+  width: 100%;
+  display: block;
+  margin-bottom: 30px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-right input {
+  width: 280px;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  background-color: #f9f9f9;
+}
+
+.header-right input:focus {
+  border-color: #00796b;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.1);
+  outline: none;
+}
+.header-right button {
+  padding: 9px 16px;
+  background-color: #59d4c6;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.header-right button:hover {
+  background-color: #005f56;
+}
+
+.login,
+.cart,
+.header-right a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #ffffff;
+  padding: 9px 16px;
+  background-color: #00796b;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.header-right a:hover {
+  background-color: #005f56;
+}

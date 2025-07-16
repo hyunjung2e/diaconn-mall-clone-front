@@ -14,7 +14,6 @@ html, body {
     padding: 0 20px;
 }
 
-/* 헤더 */
 header {
     background-color: #ffffff;
     padding: 15px 0;
@@ -154,12 +153,12 @@ main{display: block;}
 .total-price {
     font-size: 20px;
     font-weight: bold;
-    color: red;
+    color: rgb(47, 47, 47);
     margin-bottom: 15px;
 }
 
 .checkout-btn {
-    background-color: red;
+    background-color: rgb(232, 74, 74);
     color: white;
     font-size: 18px;
     padding: 15px 30px;

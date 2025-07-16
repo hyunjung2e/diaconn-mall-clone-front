@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
 import '../css/cart.css';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from './Common.tsx';
+import { getCartItems, getLoggedInUser } from '../api/Api.ts';
+import { CartItem, LoginUser } from '../types/Types.ts';
 
 const Cart = () => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [cartItems, setCartItems] = useState([
-    { id: 1, description: '상품 설명 1', price: 10000, quantity: 1, selected: false },
-    { id: 2, description: '상품 설명 2', price: 20000, quantity: 1, selected: false },
-    { id: 3, description: '상품 설명 3', price: 15000, quantity: 1, selected: false }
-  ]);
+  const [user, setUser] = useState<LoginUser | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getLoggedInUser()
+      .then((data) => setUser(data))
+      .catch(() => setUser(null));
+
+    getCartItems()
+      .then((data) =>
+        setCartItems(data.map((item) => ({ ...item, selected: false })))
+      )
+      .catch(console.error);
+  }, []);
+
+  const handleSearch = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(`/search?query=${encodeURIComponent(trimmed)}`);
+  };
 
   const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setCartItems(cartItems.map(item => ({ ...item, selected: !selectAll })));
+    const newState = !selectAll;
+    setSelectAll(newState);
+    setCartItems(cartItems.map(item => ({ ...item, selected: newState })));
   };
 
   const handleItemSelect = (id: number) => {
-    setCartItems(cartItems.map(item => 
+    setCartItems(cartItems.map(item =>
       item.id === id ? { ...item, selected: !item.selected } : item
     ));
   };
@@ -26,20 +48,19 @@ const Cart = () => {
     ));
   };
 
-  const totalPrice = cartItems.reduce((total, item) => item.selected ? total + item.price * item.quantity : total, 0);
+  const totalPrice = cartItems.reduce(
+    (total, item) => item.selected ? total + item.price * item.quantity : total,
+    0
+  );
 
   return (
     <>
-      <header>
-        <div className="container">
-          <a href="#" className="logo"><img src="./img/logo.png" alt="로고" /></a>
-          <div className="header-right">
-            <input type="text" placeholder="검색어를 입력해주세요." />
-            <a href="#" className="login">로그인</a>
-            <a href="#" className="cart">장바구니</a>
-          </div>
-        </div>
-      </header>
+      <Header
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
 
       <nav className="menu">
         <a href="#">메뉴1</a>
@@ -52,8 +73,8 @@ const Cart = () => {
         <div className="cart-header">
           <input
             type="checkbox"
-            className="select-all"
             id="select-all"
+            className="select-all"
             checked={selectAll}
             onChange={handleSelectAll}
           />
@@ -69,7 +90,7 @@ const Cart = () => {
                 checked={item.selected}
                 onChange={() => handleItemSelect(item.id)}
               />
-              <img src="상품이미지.jpg" alt="상품 이미지" />
+              <img src={item.imgUrl || '상품이미지.jpg'} alt="상품 이미지" />
               <div className="item-info">
                 <p className="item-description">{item.description}</p>
                 <p className="item-price">₩{item.price.toLocaleString()}</p>
@@ -79,8 +100,11 @@ const Cart = () => {
                 <input
                   type="number"
                   value={item.quantity}
+                  min={1}
                   className="quantity"
-                  onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                  onChange={(e) =>
+                    handleQuantityChange(item.id, Number(e.target.value))
+                  }
                 />
               </div>
             </div>
@@ -94,9 +118,7 @@ const Cart = () => {
       </main>
 
       <footer>
-        <div className="container">
-          © 2025 쇼핑몰. All rights reserved.
-        </div>
+        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
       </footer>
     </>
   );

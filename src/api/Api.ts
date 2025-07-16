@@ -1,4 +1,6 @@
 import { Product } from '../types/Types.ts';
+import { CartItem } from '../types/Types';
+
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL + '/api';
 
 // ***** 유저 관련 *****
@@ -134,5 +136,12 @@ export const getProductDetail = async (productId: number) => {
 export const searchProducts = async (query: string): Promise<Product[]> => {
   const response = await fetch(`${API_BASE_URL}/product/search?q=${encodeURIComponent(query)}`);
   if (!response.ok) throw new Error('검색 실패');
+  return response.json();
+};
+
+// 장바구니 목록 가져오기
+export const getCartItems = async (): Promise<CartItem[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/cart`);
+  if (!response.ok) throw new Error('장바구니 불러오기 실패');
   return response.json();
 };

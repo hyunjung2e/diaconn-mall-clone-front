@@ -7,6 +7,7 @@ import {
   fetchProductsInfo,
   fetchCategoryProducts,
 } from '../api/Api.ts';
+import Header from './Common.tsx';
 import { LoginUser, Product } from '../types/Types.ts';
 
 const Main = () => {
@@ -38,7 +39,6 @@ const Main = () => {
       .catch(() => setUser(null));
   }, [categoryId]);
 
-  // 검색 버튼 클릭 또는 Enter 키로 검색 시 /search 페이지로 이동
   const handleSearch = () => {
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
@@ -51,50 +51,20 @@ const Main = () => {
 
   return (
     <>
-      <header>
-        <div className="container">
-          <a href="/" className="logo">
-            <img src="/img/logo.png" alt="로고" />
-          </a>
-          <div className="header-right">
-            <input
-              type="text"
-              placeholder="검색어를 입력해주세요."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSearch();
-              }}
-            />
-            <button onClick={handleSearch}>검색</button>
+    <Header
+      user={user}
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
+      handleSearch={handleSearch}
+    />
 
-            {user ? (
-              <>
-                <span
-                  onClick={() => navigate('/mypage')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {user.name}님
-                </span>
-                <a>로그아웃</a>
-              </>
-            ) : (
-              <a className="login" onClick={() => navigate('/login')}>
-                로그인
-              </a>
-            )}
-            <a className="cart" onClick={() => navigate('/cart')}>
-              장바구니
-            </a>
-          </div>
-        </div>
-      </header>
       <nav className="menu">
         <a onClick={() => handleCategory('0')}>간편식</a>
         <a onClick={() => handleCategory('1')}>식단</a>
         <a onClick={() => handleCategory('2')}>음료</a>
         <a onClick={() => handleCategory('3')}>의료기기</a>
       </nav>
+
       <main>
         <div className="container">
           {banners.map((banner) => (
@@ -108,9 +78,31 @@ const Main = () => {
           ))}
         </div>
       </main>
+
       <section>
         <div className="container">
-          <h2>베스트 상품</h2>
+          <h2>🔥 베스트 상품</h2>
+          <ul className="product-list highlight-list">
+  {productInfo.slice(0, 4).map((e, i) => (
+    <li key={i}>
+      <div className="product-image-wrapper">
+        <img
+          src={e.imgUrl}
+          alt={e.altText}
+          loading="lazy"
+          onClick={() => navigate(`/productDetail/${e.id}`)}
+        />
+        <span className="product-badge">지금 특가!</span>
+      </div>
+      <h3 className="product-name">{e.nm}</h3>
+      <p className="product-price">{e.price.toLocaleString()}원</p>
+    </li>
+  ))}
+</ul>
+
+          
+
+          <h2>🛍 전체 상품</h2>
           <ul className="product-list">
             {productInfo.map((e, i) => (
               <li key={i}>
@@ -120,13 +112,14 @@ const Main = () => {
                   loading="lazy"
                   onClick={() => navigate(`/productDetail/${e.id}`)}
                 />
-                <h3>{e.nm}</h3>
-                <p>{e.price}원</p>
+                <h3 className="product-name">{e.nm}</h3>
+                <p className="product-price">{e.price.toLocaleString()}원</p>
               </li>
             ))}
           </ul>
         </div>
       </section>
+
       <footer>
         <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
       </footer>

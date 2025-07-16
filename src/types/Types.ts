@@ -20,3 +20,13 @@ export interface Product {
   imgUrl: string;
   altText: string;
 }
+
+export type CartItem = {
+  id: number;
+  description: string;
+  price: number;
+  quantity: number;
+  selected?: boolean;
+  imgUrl?: string;
+}
+
