@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api/Api.ts'; 
+import { login } from '../api/Api.ts';
 import '../css/login.css';
 
 const Login: React.FC = () => {
@@ -13,7 +13,7 @@ const Login: React.FC = () => {
     try {
       const data = await login({ email, password });
 
-      alert(`${data.user.name}님 환영합니다!`);
+      alert(`${data.user.name}님 환영합니다!🤗`);
       setEmail('');
       setPassword('');
       navigate('/');
@@ -22,11 +22,10 @@ const Login: React.FC = () => {
       console.error(error);
     }
   };
- return (
+  return (
     <div className="body">
       <div className="login-signup-box">
-        <img className='logo' src="/img/logo.png" alt="디아콘몰 로고" />
-        
+        <img className="logo" src="/img/logo.png" alt="디아콘몰 로고" />
 
         <input
           type="email"
@@ -60,11 +59,12 @@ const Login: React.FC = () => {
           </button>
         </div>
 
-        <Link className='signup_link' to="/signup">회원이 아니신가요?</Link>
+        <Link className="signup_link" to="/signup">
+          회원이 아니신가요?
+        </Link>
       </div>
     </div>
   );
 };
 
 export default Login;
-

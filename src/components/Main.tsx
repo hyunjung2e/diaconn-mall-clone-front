@@ -51,12 +51,12 @@ const Main = () => {
 
   return (
     <>
-    <Header
-      user={user}
-      searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
-      handleSearch={handleSearch}
-    />
+      <Header
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
 
       <nav className="menu">
         <a onClick={() => handleCategory('0')}>간편식</a>
@@ -83,25 +83,22 @@ const Main = () => {
         <div className="container">
           <h2>🔥 베스트 상품</h2>
           <ul className="product-list highlight-list">
-  {productInfo.slice(0, 4).map((e, i) => (
-    <li key={i}>
-      <div className="product-image-wrapper">
-        <img
-          src={e.imgUrl}
-          alt={e.altText}
-          loading="lazy"
-          onClick={() => navigate(`/productDetail/${e.id}`)}
-        />
-        <span className="product-badge">지금 특가!</span>
-      </div>
-      <h3 className="product-name">{e.nm}</h3>
-      <p className="product-price">{e.price.toLocaleString()}원</p>
-    </li>
-  ))}
-</ul>
-
-          
-
+            {productInfo.slice(0, 4).map((e, i) => (
+              <li key={i}>
+                <div className="product-image-wrapper">
+                  <img
+                    src={e.imgUrl}
+                    alt={e.altText}
+                    loading="lazy"
+                    onClick={() => navigate(`/productDetail/${e.id}`)}
+                  />
+                  <span className="product-badge">지금 특가!</span>
+                </div>
+                <h3 className="product-name">{e.nm}</h3>
+                <p className="product-price">{e.price.toLocaleString()}원</p>
+              </li>
+            ))}
+          </ul>
           <h2>🛍 전체 상품</h2>
           <ul className="product-list">
             {productInfo.map((e, i) => (
