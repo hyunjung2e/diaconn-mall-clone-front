@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import '../css/login.css';
+import '../css/mypage.css';
 import { getLoggedInUser, updateUser } from '../api/Api.ts';
 import { LoginUser } from '../types/Types.ts';
+import Header from './Common.tsx';
+import { useNavigate } from 'react-router-dom';
 
 export default function Mypage() {
   const [user, setUser] = useState<LoginUser | null>(null);
@@ -14,6 +16,8 @@ export default function Mypage() {
     address: user?.address || '',
     addressDetail: user?.addressDetail || '',
   });
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   // 로그인한 유저 정보 가져오기
   useEffect(() => {
@@ -80,117 +84,136 @@ export default function Mypage() {
     }
   };
 
+  const handleSearch = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(`/search?query=${encodeURIComponent(trimmed)}`);
+  };
+
   return (
-    <div className="body">
-      <div className="login-signup-box">
-        <h2 className="mypage-title">마이페이지</h2>
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
-        >
-          {/* 이름 */}
-          <div className="mypage-row">
-            <label className="mypage-label">이름</label>
-            <input
-              className="mypage-disabled-input"
-              value={user?.name || ''}
-              readOnly
-              onChange={handleChange}
-              autoComplete="tel"
-            />
-            {errors.name && <p>{errors.name}</p>}
-          </div>
+    <>
+      <Header
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
 
-          {/* 이메일 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <label className="mypage-label">이메일</label>
-            <input
-              className="mypage-disabled-input"
-              value={user?.email || ''}
-              readOnly
-              onChange={handleChange}
-            />
-            {errors.email && <p>{errors.email}</p>}
-          </div>
+      <div className="body">
+        <div className="inner-container">
+          <h2 className="mypage-title">마이페이지</h2>
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
+          >
+            {/* 이름 */}
+            <div className="mypage-row">
+              <label className="mypage-label">이름</label>
+              <input
+                className="mypage-disabled-input"
+                value={user?.name || ''}
+                readOnly
+                onChange={handleChange}
+                autoComplete="tel"
+              />
+              {errors.name && <p>{errors.name}</p>}
+            </div>
 
-          {/* 휴대폰번호(필수) */}
-          <div className="mypage-row">
-            <label className="mypage-label">휴대폰번호</label>
-            <input
-              placeholder="010-1234-5678"
-              value={formData.phone}
-              className="mypage-input"
-              type="tel"
-              name="phone"
-              onChange={handleChange}
-              autoComplete="tel"
-            />
-            {errors.phone && <p className="mypage-errors">{errors.phone}</p>}
-          </div>
+            {/* 이메일 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label className="mypage-label">이메일</label>
+              <input
+                className="mypage-disabled-input"
+                value={user?.email || ''}
+                readOnly
+                onChange={handleChange}
+              />
+              {errors.email && <p>{errors.email}</p>}
+            </div>
 
-          {/* 비밀번호(필수) */}
-          <div className="mypage-row">
-            <label className="mypage-label">비밀번호</label>
-            <input
-              placeholder="비밀번호를 입력하세요"
-              className="mypage-input"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
-            {errors.password && <p className="mypage-errors">{errors.password}</p>}
-          </div>
+            {/* 휴대폰번호(필수) */}
+            <div className="mypage-row">
+              <label className="mypage-label">휴대폰번호</label>
+              <input
+                placeholder="010-1234-5678"
+                value={formData.phone}
+                className="mypage-input"
+                type="tel"
+                name="phone"
+                onChange={handleChange}
+                autoComplete="tel"
+              />
+              {errors.phone && <p className="mypage-errors">{errors.phone}</p>}
+            </div>
 
-          {/* 비밀번호 확인(필수) */}
-          <div className="mypage-row">
-            <label className="mypage-label">비밀번호 확인</label>
-            <input
-              placeholder="비밀번호를 입력하세요"
-              className="mypage-input"
-              type="password"
-              name="password2"
-              value={formData.password2}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
-            {errors.password2 && <p className="mypage-errors">{errors.password2}</p>}
-          </div>
+            {/* 비밀번호(필수) */}
+            <div className="mypage-row">
+              <label className="mypage-label">비밀번호</label>
+              <input
+                placeholder="비밀번호를 입력하세요"
+                className="mypage-input"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+              />
+              {errors.password && <p className="mypage-errors">{errors.password}</p>}
+            </div>
 
-          {/* 주소(선택) */}
-          <div className="mypage-row">
-            <label className="mypage-label">주소</label>
-            <input
-              placeholder="주소를 입력하세요"
-              className="mypage-input"
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-            />
-            {errors.address && <p className="mypage-errors">{errors.address}</p>}
-          </div>
+            {/* 비밀번호 확인(필수) */}
+            <div className="mypage-row">
+              <label className="mypage-label">비밀번호 확인</label>
+              <input
+                placeholder="비밀번호 확인을 입력하세요"
+                className="mypage-input"
+                type="password"
+                name="password2"
+                value={formData.password2}
+                onChange={handleChange}
+                autoComplete="new-password"
+              />
+              {errors.password2 && <p className="mypage-errors">{errors.password2}</p>}
+            </div>
 
-          {/* 주소상세(선택) */}
-          <div className="mypage-row">
-            <input
-              placeholder="상세주소를 입력하세요"
-              className="mypage-input"
-              type="text"
-              name="addressDetail"
-              value={formData.addressDetail}
-              onChange={handleChange}
-            />
-            {errors.address2 && <p className="mypage-errors">{errors.address2}</p>}
-          </div>
+            {/* 주소(선택) */}
+            <div className="mypage-row">
+              <label className="mypage-label">주소</label>
+              <input
+                placeholder="주소를 입력하세요"
+                className="mypage-input"
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+              />
+              {errors.address && <p className="mypage-errors">{errors.address}</p>}
+            </div>
 
-          {/* 수정 버튼 */}
-          <button className="submit-button" type="submit">
-            회원정보 수정
-          </button>
-        </form>
+            {/* 주소상세(선택) */}
+            <div className="mypage-row">
+              <input
+                placeholder="상세주소를 입력하세요"
+                className="mypage-input"
+                type="text"
+                name="addressDetail"
+                value={formData.addressDetail}
+                onChange={handleChange}
+              />
+              {errors.address2 && <p className="mypage-errors">{errors.address2}</p>}
+            </div>
+
+            {/* 수정 버튼 */}
+            <button className="submit-button" type="submit">
+              회원정보 수정
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+      {/* 푸터 */}
+      <footer>
+        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
+      </footer>
+    </>
   );
 }
