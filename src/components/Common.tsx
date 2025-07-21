@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { LoginUser } from '../types/Types';
 import '../css/common.css';
+import { logout } from '../api/Api.ts';
 
 type HeaderProps = {
   user: LoginUser | null;
@@ -12,6 +13,19 @@ type HeaderProps = {
 
 const Header = ({ user, searchQuery, setSearchQuery, handleSearch }: HeaderProps) => {
   const navigate = useNavigate();
+
+  // 로그아웃 확인
+  const confirmLogout = async () => {
+    const confirmLogout = window.confirm('로그아웃 하시겠습니까?');
+    if (confirmLogout) {
+      try {
+        await logout();
+        window.location.href = '/login';
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  };
 
   return (
     <header>
@@ -36,7 +50,7 @@ const Header = ({ user, searchQuery, setSearchQuery, handleSearch }: HeaderProps
               <span onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }}>
                 {user.name}님
               </span>
-              <a>로그아웃</a>
+              <a onClick={confirmLogout}>로그아웃</a>
             </>
           ) : (
             <a className="login" onClick={() => navigate('/login')}>

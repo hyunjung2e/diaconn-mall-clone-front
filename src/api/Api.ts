@@ -72,6 +72,21 @@ export const updateUser = async (userData: any) => {
   return response.json();
 };
 
+// 로그아웃
+export const logout = async () => {
+  const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include', // 쿠키 포함 (세션 유지용)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || '로그아웃 실패');
+  }
+
+  return response.json();
+};
+
 // ***** 메인 & 상품 관련 *****
 
 // 메인-배너 가져오기
