@@ -6,7 +6,6 @@ import Mypage from './components/Mypage.tsx';
 import MyOrder from './components/MyOrder.tsx';
 import OrderDone from './components/OrderDone.tsx';
 import Main from './components/Main.tsx';
-import Main2 from './components/Main2.tsx';
 import Cart from './components/Cart.tsx';
 import Order from './components/Order.tsx';
 import ProductDetail from './components/ProductDetail.tsx';
@@ -19,8 +18,6 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Main />} />
         <Route path="/:id" element={<Main />} />
-        <Route path="/main2" element={<Main2 />} />
-        <Route path="/main2/:id" element={<Main2 />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/order" element={<Order />} />
         <Route path="/productDetail/:id" element={<ProductDetail />} />
