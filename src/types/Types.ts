@@ -15,7 +15,7 @@ export interface LoginUser {
 export interface Product {
   id: number;
   nm: string;
-  desc: string;
+  contentDesc: string;
   price: number;
   imgUrl: string;
   altText: string;
@@ -28,5 +28,4 @@ export type CartItem = {
   quantity: number;
   selected?: boolean;
   imgUrl?: string;
-}
-
+};
