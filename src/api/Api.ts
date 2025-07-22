@@ -98,13 +98,13 @@ export const getBanners = async () => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || '배너 목록을 가져오는 데 실패했습니다.');
+    throw new Error(errorData.message || '배너를 가져오는 데 실패했습니다.');
   }
 
   return response.json();
 };
 
-// 메인-상품 이미지 가져오기
+// 모든 상품 정보 가져오기
 export const fetchProductsInfo = async () => {
   const response = await fetch(`${API_BASE_URL}/product/products`, {
     method: 'GET',
@@ -113,12 +113,12 @@ export const fetchProductsInfo = async () => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || '상품 이미지 목록을 가져오는 데 실패했습니다.');
+    throw new Error(errorData.message || '상품 목록을 가져오는 데 실패했습니다.');
   }
   return response.json();
 };
 
-// 메인-카테고리별 상품 이미지 가져오기
+// 선택 카테고리별 상품 정보 가져오기
 export const fetchCategoryProducts = async (categoryId: string) => {
   const response = await fetch(`${API_BASE_URL}/product/products/${categoryId}`, {
     method: 'GET',
