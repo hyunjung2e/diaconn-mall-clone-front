@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import '../css/mypage.css';
-import { getLoggedInUser, updateUser } from '../api/Api.ts';
-import { LoginUser } from '../types/Types.ts';
+import { LoginUser, Product } from '../types/Types.ts';
 import Header from './Common.tsx';
 import { useNavigate } from 'react-router-dom';
+import {
+  getLoggedInUser,
+  fetchProductsInfo,
+  fetchCategoryProducts,
+  updateUser,
+} from '../api/Api.ts';
 
 export default function Mypage() {
+  const navigate = useNavigate();
+  const [productInfo, setProductInfo] = useState<Product[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     phone: user?.phone || '',
@@ -16,17 +25,24 @@ export default function Mypage() {
     address: user?.address || '',
     addressDetail: user?.addressDetail || '',
   });
-  const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
 
-  // 로그인한 유저 정보 가져오기
   useEffect(() => {
+    if (categoryId) {
+      fetchCategoryProducts(categoryId)
+        .then(setProductInfo)
+        .catch((err) => console.error(err));
+    } else {
+      fetchProductsInfo()
+        .then(setProductInfo)
+        .catch((err) => console.error(err));
+    }
+    // 로그인한 유저 정보 가져오기
     getLoggedInUser()
       .then((data) => {
         if (data) setUser(data);
       })
       .catch(() => setUser(null));
-  }, []);
+  }, [categoryId]);
 
   // user가 변경되었을 때 formData 초기화
   useEffect(() => {
@@ -90,6 +106,11 @@ export default function Mypage() {
     navigate(`/search?query=${encodeURIComponent(trimmed)}`);
   };
 
+  const handleCategory = (categoryId: string) => {
+    setCategoryId(categoryId);
+    navigate(`/${categoryId}`);
+  };
+
   return (
     <>
       <Header
@@ -98,6 +119,13 @@ export default function Mypage() {
         setSearchQuery={setSearchQuery}
         handleSearch={handleSearch}
       />
+
+      <nav className="menu">
+        <a onClick={() => handleCategory('0')}>간편식</a>
+        <a onClick={() => handleCategory('1')}>식단</a>
+        <a onClick={() => handleCategory('2')}>음료</a>
+        <a onClick={() => handleCategory('3')}>의료기기</a>
+      </nav>
 
       <div className="body">
         <div className="inner-container">

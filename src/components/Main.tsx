@@ -11,11 +11,11 @@ import Header from './Common.tsx';
 import { LoginUser, Product } from '../types/Types.ts';
 
 const Main = () => {
+  const navigate = useNavigate();
   const [banners, setBanners] = useState<Product[]>([]);
   const [productInfo, setProductInfo] = useState<Product[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
   const [categoryId, setCategoryId] = useState('');
 
   useEffect(() => {
@@ -47,6 +47,7 @@ const Main = () => {
 
   const handleCategory = (categoryId: string) => {
     setCategoryId(categoryId);
+    navigate(`/${categoryId}`);
   };
 
   return (
