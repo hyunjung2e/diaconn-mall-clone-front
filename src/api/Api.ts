@@ -160,3 +160,20 @@ export const getCartItems = async (): Promise<CartItem[]> => {
   if (!response.ok) throw new Error('장바구니 불러오기 실패');
   return response.json();
 };
+
+// 장바구니 상품 담기
+export const addToCart = async (userId: number, productId: number, count: number = 1) => {
+  const response = await fetch(`${API_BASE_URL}/cart`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ userId, productId, count }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || '장바구니 담기 실패');
+  }
+
+  return response.json();
+};

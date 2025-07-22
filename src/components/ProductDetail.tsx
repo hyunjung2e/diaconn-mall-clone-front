@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
-import { getProductDetail } from '../api/Api.ts';
+import { getProductDetail, getLoggedInUser, addToCart } from '../api/Api.ts';
 import { LoginUser, Product } from '../types/Types.ts';
 
 const ProductDetail: React.FC = () => {
@@ -25,6 +25,10 @@ const ProductDetail: React.FC = () => {
       .then((data) => setProduct(data))
       .catch((err: any) => setError(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
       .finally(() => setLoading(false));
+
+    getLoggedInUser()
+      .then((data) => setUser(data))
+      .catch(() => setUser(null));
   }, [id]);
 
   const handleSearch = () => {
@@ -40,6 +44,22 @@ const ProductDetail: React.FC = () => {
 
   const handleBuyNow = () => {
     navigate(`/order?productNo=${product?.id}`);
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await addToCart(user.id, product!.id, 1);
+      alert(`${product!.nm} 장바구니에 담겼습니다.`);
+    } catch (err) {
+      console.error('장바구니 담기 실패', err);
+      alert('장바구니 담기에 실패했습니다.');
+    }
   };
 
   if (loading) return <div>로딩 중...</div>;
@@ -99,9 +119,9 @@ const ProductDetail: React.FC = () => {
         <div className="product-details">
           <h1>{product.nm}</h1>
           <p className="price">가격: {product.price.toLocaleString()}원</p>
-          <p>설명: {product.contentDesc}</p>
+          <p>설명: {product.desc}</p>
 
-          <button className="btn add-to-cart" onClick={() => alert(`${product.nm} 장바구니 담기`)}>
+          <button className="btn add-to-cart" onClick={handleAddToCart}>
             장바구니 담기
           </button>
           <button className="btn buy-now" onClick={handleBuyNow}>
