@@ -2,15 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
 import { getProductDetail } from '../api/Api.ts';
-import { LoginUser } from '../types/Types.ts';
-
-interface Product {
-  id: number;
-  nm: string;
-  price: number;
-  contentDesc: string;
-  imgUrl: string;
-}
+import { LoginUser, Product } from '../types/Types.ts';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
@@ -18,16 +10,9 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // 추가된 상태
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState<LoginUser | null>(null);
-
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
+  const [categoryId, setCategoryId] = useState('');
 
   useEffect(() => {
     if (!id || isNaN(Number(id))) {
@@ -38,11 +23,24 @@ const ProductDetail: React.FC = () => {
 
     getProductDetail(Number(id))
       .then((data) => setProduct(data))
-      .catch((err: any) =>
-        setError(err.message || '상품 정보를 불러오는 데 실패했습니다.')
-      )
+      .catch((err: any) => setError(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleCategory = (categoryId: string) => {
+    setCategoryId(categoryId);
+    navigate(`/${categoryId}`);
+  };
+
+  const handleBuyNow = () => {
+    navigate(`/order?productNo=${product?.id}`);
+  };
 
   if (loading) return <div>로딩 중...</div>;
   if (error) return <div style={{ color: 'red' }}>오류: {error}</div>;
@@ -69,10 +67,7 @@ const ProductDetail: React.FC = () => {
 
             {user ? (
               <>
-                <span
-                  onClick={() => navigate('/mypage')}
-                  style={{ cursor: 'pointer' }}
-                >
+                <span onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }}>
                   {user.name}님
                 </span>
                 <a onClick={() => alert('로그아웃 기능 구현 필요')}>로그아웃</a>
@@ -90,10 +85,10 @@ const ProductDetail: React.FC = () => {
       </header>
 
       <nav className="menu">
-        <a href="#">메뉴1</a>
-        <a href="#">메뉴2</a>
-        <a href="#">메뉴3</a>
-        <a href="#">메뉴4</a>
+        <a onClick={() => handleCategory('0')}>간편식</a>
+        <a onClick={() => handleCategory('1')}>식단</a>
+        <a onClick={() => handleCategory('2')}>음료</a>
+        <a onClick={() => handleCategory('3')}>의료기기</a>
       </nav>
 
       <div className="product-container">
@@ -106,16 +101,10 @@ const ProductDetail: React.FC = () => {
           <p className="price">가격: {product.price.toLocaleString()}원</p>
           <p>설명: {product.contentDesc}</p>
 
-          <button
-            className="btn add-to-cart"
-            onClick={() => alert(`${product.nm} 장바구니 담기`)}
-          >
+          <button className="btn add-to-cart" onClick={() => alert(`${product.nm} 장바구니 담기`)}>
             장바구니 담기
           </button>
-          <button
-            className="btn buy-now"
-            onClick={() => alert(`${product.nm} 바로 구매`)}
-          >
+          <button className="btn buy-now" onClick={handleBuyNow}>
             바로 구매
           </button>
         </div>
