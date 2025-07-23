@@ -3,7 +3,7 @@ import '../css/order.css';
 import Header from './Common.tsx';
 import { LoginUser, Product } from '../types/Types.ts';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getLoggedInUser, getProductDetail } from '../api/Api.ts';
+import { getLoggedInUser, getProductDetail, order } from '../api/Api.ts';
 
 const Order: React.FC = () => {
   const location = useLocation();
@@ -99,13 +99,11 @@ const Order: React.FC = () => {
           phone: formData.recipientPhone,
           address: formData.recipientAddress,
           addressDetail: formData.recipientAddressDetail,
+          memo: message,
         };
-        // await updateUser(updateData);
+        await order(updateData);
+        alert('결제가 완료되었습니다!');
         navigate(`/orderdone`);
-
-        // 수정 후 최신 유저 정보 다시 불러오기
-        const updatedUser = await getLoggedInUser();
-        setUser(updatedUser);
       } catch (error) {
         alert('결제 시도 중 오류가 발생했습니다.');
       }
