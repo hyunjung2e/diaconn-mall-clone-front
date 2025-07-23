@@ -177,3 +177,13 @@ export const addToCart = async (userId: number, productId: number, count: number
 
   return response.json();
 };
+
+// 주문하기
+export const order = async (orderData: any) => {
+  const response = await fetch(`${API_BASE_URL}/order`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData),
+  });
+  return response.json();
+};
