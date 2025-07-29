@@ -12,7 +12,8 @@ const Order: React.FC = () => {
   const productNo = searchParams.get('productNo');
 
   // 상태관리
-  const [product, setProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedPrices, setSelectedPrices] = useState<Product[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,16 +26,38 @@ const Order: React.FC = () => {
     recipientAddress: '',
     recipientAddressDetail: '',
   });
-  const [price, setPrice] = useState('');
+  const totalPrice = selectedPrices.reduce((sum, p) => sum + p.price, 0);
 
   useEffect(() => {
     // 바로 구매 요청한 상품 정보 가져오기
-    if (productNo) {
-      getProductDetail(Number(productNo))
-        .then((data) => setProduct(data))
-        .catch((err: any) => setErrors(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
-        .finally(() => setLoading(false));
-    }
+    // if (productNo) {
+    //   getProductDetail(Number(productNo))
+    //     .then((data) => setProducts([data]))
+    //     .catch((err: any) => setErrors(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
+    //     .finally(() => setLoading(false));
+    // }
+
+    setProducts([
+      {
+        id: 1,
+        nm: '상품1',
+        contentDesc: '설명',
+        price: 20000,
+        imgUrl:
+          'https://mall-clone.s3.ap-northeast-2.amazonaws.com/devices/3_%5B%EB%B0%94%EB%A1%9C%EC%9E%B0%5D+%ED%8E%84%EC%8A%A4%ED%94%8C%EB%9F%AC%EC%8A%A4+%EC%9E%90%EB%8F%99%EC%A0%84%EC%9E%90%ED%98%88%EC%95%95%EA%B3%84_120000.png',
+        altText: '',
+      },
+      {
+        id: 2,
+        nm: '상품2',
+        contentDesc: '설명',
+        price: 10000,
+        imgUrl:
+          'https://mall-clone.s3.ap-northeast-2.amazonaws.com/devices/3_%5B%EB%B0%94%EB%A1%9C%EC%9E%B0%5D%EB%B0%94%EB%A1%9C%EC%9E%B02+%ED%98%88%EB%8B%B9%EC%8B%9C%ED%97%98%EC%A7%80+50%EB%A7%A4_12000.png',
+        altText: '',
+      },
+    ]);
+
     // 로그인한 유저 정보 가져오기
     getLoggedInUser()
       .then((data) => {
@@ -54,11 +77,19 @@ const Order: React.FC = () => {
     navigate(`/${categoryId}`);
   };
 
+  // 체크박스 클릭 이벤트
+  const handleCheckbox = (checked: boolean, product: Product) => {
+    setSelectedPrices((prev) =>
+      checked ? [...prev, product] : prev.filter((p) => p.id !== product.id)
+    );
+  };
+
   // 수신자 정보 입력값 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // 주문자 정보와 동일하게 변경
   const handleRecipientInfo = () => {
     setFormData({
       recipientName: user?.name ?? '',
@@ -66,15 +97,6 @@ const Order: React.FC = () => {
       recipientAddress: user?.address ?? '',
       recipientAddressDetail: user?.addressDetail ?? '',
     });
-  };
-
-  // 체크박스 클릭 이벤트
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setPrice(product?.price.toLocaleString() ?? '');
-    } else {
-      setPrice('');
-    }
   };
 
   // 유효성 검사
@@ -86,6 +108,7 @@ const Order: React.FC = () => {
     if (!formData.recipientAddressDetail)
       newErrors.recipientAddressDetail = '수신자 주소 상세를 입력하세요.';
     setErrors(newErrors);
+    if (totalPrice === 0) return false;
     return Object.keys(newErrors).length === 0;
   };
 
@@ -110,8 +133,8 @@ const Order: React.FC = () => {
     }
   };
 
-  if (loading) return <div>로딩 중...</div>;
-  if (!product) return <div>상품을 찾을 수 없습니다.</div>;
+  // if (loading) return <div>로딩 중...</div>;
+  if (!products) return <div>상품을 찾을 수 없습니다.</div>;
 
   return (
     <>
@@ -130,18 +153,18 @@ const Order: React.FC = () => {
 
       <div className="container">
         <h2>주문하기</h2>
-
         {/* 결제정보 */}
-        <div className="order-list" key={product.id}>
-          <input type="checkbox" onChange={handleCheckbox} />
-          <img src={product.imgUrl} alt="상품 이미지" />
-          <div>
-            {product.nm}
-            <br />
-            가격: {product.price.toLocaleString()}원
+        {products.map((product) => (
+          <div className="order-list" key={product.id}>
+            <input type="checkbox" onChange={(e) => handleCheckbox(e.target.checked, product)} />
+            <img src={product.imgUrl} alt="상품 이미지" />
+            <div>
+              {product.nm}
+              <br />
+              가격: {product.price.toLocaleString()}원
+            </div>
           </div>
-        </div>
-
+        ))}
         <form
           onSubmit={handleOrder}
           style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
@@ -197,12 +220,10 @@ const Order: React.FC = () => {
               />
             </div>
           </div>
-
           {/* 주문자 정보와 동일하게 변경하는 버튼 */}
           <button className="same-button" type="button" onClick={handleRecipientInfo}>
             주문자 정보와 동일
           </button>
-
           {/* 수신자 정보 */}
           <div>
             <h3>수신자 정보</h3>
@@ -275,10 +296,9 @@ const Order: React.FC = () => {
               />
             </div>
           </div>
-
           {/* 총 결제 금액 */}
-          <div className="pay-button" onClick={handleOrder}>
-            총 금액: {price}원 결제하기
+          <div className={`pay-button${totalPrice === 0 ? ' disabled' : ''}`} onClick={handleOrder}>
+            총 금액: {totalPrice.toLocaleString()}원 결제하기
           </div>
         </form>
       </div>

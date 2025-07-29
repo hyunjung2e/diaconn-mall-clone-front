@@ -82,6 +82,10 @@
   background: #e64a19;
 }
 
+.pay-button.disabled {
+  background: grey;
+}
+
 .order-row {
   display: flex;
   flex-direction: column;
