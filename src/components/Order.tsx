@@ -116,19 +116,21 @@ const Order: React.FC = () => {
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      try {
-        const updateData = {
-          name: formData.recipientName,
-          phone: formData.recipientPhone,
-          address: formData.recipientAddress,
-          addressDetail: formData.recipientAddressDetail,
-          memo: message,
-        };
-        await order(updateData);
-        alert('결제가 완료되었습니다!');
-        navigate(`/orderdone`);
-      } catch (error) {
-        alert('결제 시도 중 오류가 발생했습니다.');
+      if (window.confirm(`총 ${totalPrice.toLocaleString()}원 결제하시겠습니까?`)) {
+        try {
+          const updateData = {
+            name: formData.recipientName,
+            phone: formData.recipientPhone,
+            address: formData.recipientAddress,
+            addressDetail: formData.recipientAddressDetail,
+            memo: message,
+          };
+          await order(updateData);
+          alert('결제가 완료되었습니다!');
+          navigate(`/orderdone`);
+        } catch (error) {
+          alert('결제 시도 중 오류가 발생했습니다.');
+        }
       }
     }
   };
