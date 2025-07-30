@@ -155,8 +155,8 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
 };
 
 // 장바구니 목록 가져오기
-export const getCartItems = async (): Promise<CartItem[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/cart`);
+export const getCartItems = async (userId: number): Promise<CartItem[]> => {
+  const response = await fetch(`${API_BASE_URL}/cart/${userId}`);
   if (!response.ok) throw new Error('장바구니 불러오기 실패');
   return response.json();
 };

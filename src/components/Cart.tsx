@@ -14,14 +14,22 @@ const Cart = () => {
 
   useEffect(() => {
     getLoggedInUser()
-      .then((data) => setUser(data))
-      .catch(() => setUser(null));
-
-    getCartItems()
-      .then((data) =>
-        setCartItems(data.map((item) => ({ ...item, selected: false })))
-      )
-      .catch(console.error);
+      .then((data) => {
+        setUser(data);
+        console.log('로그인된 사용자:', data);
+        return getCartItems(data.id);
+      })
+      .then((cartData) => {
+        const items = cartData.map((item) => ({
+          ...item,
+          selected: false,
+          quantity: item.count || 1,
+        }));
+        setCartItems(items);
+      })
+      .catch((err) => {
+        console.error('장바구니 불러오기 실패', err);
+      });
   }, []);
 
   const handleSearch = () => {
@@ -33,23 +41,21 @@ const Cart = () => {
   const handleSelectAll = () => {
     const newState = !selectAll;
     setSelectAll(newState);
-    setCartItems(cartItems.map(item => ({ ...item, selected: newState })));
+    setCartItems(cartItems.map((item) => ({ ...item, selected: newState })));
   };
 
   const handleItemSelect = (id: number) => {
-    setCartItems(cartItems.map(item =>
-      item.id === id ? { ...item, selected: !item.selected } : item
-    ));
+    setCartItems(
+      cartItems.map((item) => (item.id === id ? { ...item, selected: !item.selected } : item))
+    );
   };
 
   const handleQuantityChange = (id: number, value: number) => {
-    setCartItems(cartItems.map(item =>
-      item.id === id ? { ...item, quantity: value } : item
-    ));
+    setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: value } : item)));
   };
 
   const totalPrice = cartItems.reduce(
-    (total, item) => item.selected ? total + item.price * item.quantity : total,
+    (total, item) => (item.selected ? total + item.price * item.quantity : total),
     0
   );
 
@@ -82,7 +88,7 @@ const Cart = () => {
         </div>
 
         <div className="cart-items">
-          {cartItems.map(item => (
+          {cartItems.map((item) => (
             <div className="cart-item" key={item.id}>
               <input
                 type="checkbox"
@@ -92,7 +98,7 @@ const Cart = () => {
               />
               <img src={item.imgUrl || '상품이미지.jpg'} alt="상품 이미지" />
               <div className="item-info">
-                <p className="item-description">{item.description}</p>
+                <p className="item-description">{item.description || item.nm}</p>
                 <p className="item-price">₩{item.price.toLocaleString()}</p>
               </div>
               <div className="item-price-detail">
@@ -102,9 +108,7 @@ const Cart = () => {
                   value={item.quantity}
                   min={1}
                   className="quantity"
-                  onChange={(e) =>
-                    handleQuantityChange(item.id, Number(e.target.value))
-                  }
+                  onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
                 />
               </div>
             </div>
