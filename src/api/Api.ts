@@ -184,6 +184,7 @@ export const order = async (orderData: any) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(orderData),
+    credentials: 'include', // 쿠키 포함 (세션 유지용)
   });
   return response.json();
 };
