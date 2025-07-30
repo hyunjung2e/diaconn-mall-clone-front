@@ -151,7 +151,7 @@ const Order: React.FC = () => {
         <a onClick={() => handleCategory('3')}>의료기기</a>
       </nav>
 
-      <div className="container">
+      <div className="order-container">
         <h2>주문하기</h2>
         {/* 결제정보 */}
         {products.map((product) => (
