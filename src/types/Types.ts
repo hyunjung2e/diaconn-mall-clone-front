@@ -19,6 +19,8 @@ export interface Product {
   price: number;
   imgUrl: string;
   altText: string;
+  quantity: number;
+  totalPrice: number;
 }
 
 export type CartItem = {
