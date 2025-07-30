@@ -30,13 +30,14 @@ const Order: React.FC = () => {
 
   useEffect(() => {
     // 바로 구매 요청한 상품 정보 가져오기
-    // if (productNo) {
-    //   getProductDetail(Number(productNo))
-    //     .then((data) => setProducts([data]))
-    //     .catch((err: any) => setErrors(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
-    //     .finally(() => setLoading(false));
-    // }
+    if (productNo) {
+      getProductDetail(Number(productNo))
+        .then((data) => setProducts([data]))
+        .catch((err: any) => setErrors(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
+        .finally(() => setLoading(false));
+    }
 
+    // 장바구니에서 이관된 상품 정보 가져오기
     setProducts([
       {
         id: 1,
@@ -119,15 +120,16 @@ const Order: React.FC = () => {
       if (window.confirm(`총 ${totalPrice.toLocaleString()}원 결제하시겠습니까?`)) {
         try {
           const updateData = {
-            name: formData.recipientName,
-            phone: formData.recipientPhone,
+            totalPrice: totalPrice,
             address: formData.recipientAddress,
             addressDetail: formData.recipientAddressDetail,
+            phone: formData.recipientPhone,
+            name: formData.recipientName,
             memo: message,
           };
           await order(updateData);
-          alert('결제가 완료되었습니다!');
           navigate(`/orderdone`);
+          alert('결제가 완료되었습니다!');
         } catch (error) {
           alert('결제 시도 중 오류가 발생했습니다.');
         }
@@ -135,7 +137,7 @@ const Order: React.FC = () => {
     }
   };
 
-  // if (loading) return <div>로딩 중...</div>;
+  if (loading) return <div>로딩 중...</div>;
   if (!products) return <div>상품을 찾을 수 없습니다.</div>;
 
   return (
@@ -304,6 +306,9 @@ const Order: React.FC = () => {
           </div>
         </form>
       </div>
+      <footer>
+        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
+      </footer>
     </>
   );
 };
