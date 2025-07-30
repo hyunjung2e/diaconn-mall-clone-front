@@ -13,6 +13,7 @@ const ProductDetail: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState<LoginUser | null>(null);
   const [categoryId, setCategoryId] = useState('');
+  const [showCartPopup, setShowCartPopup] = useState(false);
 
   useEffect(() => {
     if (!id || isNaN(Number(id))) {
@@ -55,7 +56,7 @@ const ProductDetail: React.FC = () => {
 
     try {
       await addToCart(user.id, product!.id, 1);
-      alert(`${product!.nm} 장바구니에 담겼습니다.`);
+      setShowCartPopup(true);
     } catch (err) {
       console.error('장바구니 담기 실패', err);
       alert('장바구니 담기에 실패했습니다.');
@@ -129,6 +130,17 @@ const ProductDetail: React.FC = () => {
           </button>
         </div>
       </div>
+      {showCartPopup && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <p>{product?.nm} 장바구니에 담겼습니다.</p>
+            <div className="popup-buttons">
+              <button onClick={() => setShowCartPopup(false)}>계속 쇼핑</button>
+              <button onClick={() => navigate('/cart')}>장바구니로 이동</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
