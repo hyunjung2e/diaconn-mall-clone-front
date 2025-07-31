@@ -10,6 +10,7 @@ const Cart = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,6 +68,11 @@ const Cart = () => {
     0
   );
 
+  const handleCategory = (categoryId: string) => {
+    setCategoryId(categoryId);
+    navigate(`/${categoryId}`);
+  };
+
   return (
     <>
       <Header
@@ -77,10 +83,10 @@ const Cart = () => {
       />
 
       <nav className="menu">
-        <a href="#">메뉴1</a>
-        <a href="#">메뉴2</a>
-        <a href="#">메뉴3</a>
-        <a href="#">메뉴4</a>
+        <a onClick={() => handleCategory('0')}>간편식</a>
+        <a onClick={() => handleCategory('1')}>식단</a>
+        <a onClick={() => handleCategory('2')}>음료</a>
+        <a onClick={() => handleCategory('3')}>의료기기</a>
       </nav>
 
       <main className="cart-container">
