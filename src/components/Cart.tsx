@@ -15,11 +15,18 @@ const Cart = () => {
   useEffect(() => {
     getLoggedInUser()
       .then((data) => {
+        if (!data || !data.id) {
+          // 비회원이면 로그인 페이지로 이동 (redirect 파라미터 포함)
+          navigate(`/login?redirectTo=/cart`);
+          return;
+        }
+
         setUser(data);
-        console.log('로그인된 사용자:', data);
         return getCartItems(data.id);
       })
       .then((cartData) => {
+        if (!cartData) return;
+
         const items = cartData.map((item) => ({
           ...item,
           selected: false,
@@ -29,6 +36,7 @@ const Cart = () => {
       })
       .catch((err) => {
         console.error('장바구니 불러오기 실패', err);
+        navigate(`/login?redirectTo=/cart`);
       });
   }, []);
 
