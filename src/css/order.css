@@ -124,6 +124,27 @@ button {
   font-weight: 500;
 }
 
+.order-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-count button {
+  background-color: lightgray;
+  border: 1px solid white;
+  cursor: pointer;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+.order-count div {
+  margin: 0px 20px 0px 20px;
+}
+
 /* 주문완료 */
 .order-body {
   display: flex;

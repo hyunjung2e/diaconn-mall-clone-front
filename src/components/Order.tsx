@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import '../css/order.css';
 import Header from './Common.tsx';
-import { LoginUser, Product } from '../types/Types.ts';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getLoggedInUser, getProductDetail, order } from '../api/Api.ts';
+import { LoginUser, CartItem } from '../types/Types.ts';
+import { useNavigate } from 'react-router-dom';
+import { getLoggedInUser, order } from '../api/Api.ts';
 
 const Order: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const searchParams = new URLSearchParams(location.search);
-  const productNo = searchParams.get('productNo');
 
   // 상태관리
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedPrices, setSelectedPrices] = useState<Product[]>([]);
+  const [orderItems, setOrderItems] = useState<CartItem[]>([]);
+  const [selectedPrices, setSelectedPrices] = useState<CartItem[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,66 +23,97 @@ const Order: React.FC = () => {
     recipientAddress: '',
     recipientAddressDetail: '',
   });
-  const totalPrice = selectedPrices.reduce((sum, p) => sum + p.price, 0);
+  const totalPrice = selectedPrices.reduce((sum, p) => sum + p.totalPrice, 0);
 
   useEffect(() => {
-    // 바로 구매 요청한 상품 정보 가져오기
-    // if (productNo) {
-    //   getProductDetail(Number(productNo))
-    //     .then((data) => setProducts([data]))
-    //     .catch((err: any) => setErrors(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
-    //     .finally(() => setLoading(false));
-    // }
-
-    // 장바구니에서 이관된 상품 정보 가져오기
-    setProducts([
-      {
-        id: 1,
-        nm: '상품1',
-        contentDesc: '설명',
-        price: 20000,
-        imgUrl:
-          'https://mall-clone.s3.ap-northeast-2.amazonaws.com/devices/3_%5B%EB%B0%94%EB%A1%9C%EC%9E%B0%5D+%ED%8E%84%EC%8A%A4%ED%94%8C%EB%9F%AC%EC%8A%A4+%EC%9E%90%EB%8F%99%EC%A0%84%EC%9E%90%ED%98%88%EC%95%95%EA%B3%84_120000.png',
-        altText: '',
-        quantity: 1,
-        totalPrice: 20000,
-      },
-      {
-        id: 2,
-        nm: '상품2',
-        contentDesc: '설명',
-        price: 10000,
-        imgUrl:
-          'https://mall-clone.s3.ap-northeast-2.amazonaws.com/devices/3_%5B%EB%B0%94%EB%A1%9C%EC%9E%B0%5D%EB%B0%94%EB%A1%9C%EC%9E%B02+%ED%98%88%EB%8B%B9%EC%8B%9C%ED%97%98%EC%A7%80+50%EB%A7%A4_12000.png',
-        altText: '',
-        quantity: 1,
-        totalPrice: 10000,
-      },
-    ]);
-
     // 로그인한 유저 정보 가져오기
     getLoggedInUser()
       .then((data) => {
         if (data) setUser(data);
       })
       .catch(() => setUser(null));
-  }, [productNo]);
 
+    // 바로 구매 요청한 상품 정보 세션 스토리지에서 가져오기
+    const storedItem = sessionStorage.getItem('buyNowItem');
+    if (storedItem) {
+      const item = JSON.parse(storedItem);
+      setOrderItems([item]);
+    }
+    setLoading(false);
+  }, []);
+
+  // ***** 헤더 *****
+  // 검색
   const handleSearch = () => {
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
     navigate(`/search?query=${encodeURIComponent(trimmed)}`);
   };
 
+  // 카테고리 이동
   const handleCategory = (categoryId: string) => {
     setCategoryId(categoryId);
     navigate(`/${categoryId}`);
   };
 
+  // ***** 주문하기 *****
   // 체크박스 클릭 이벤트
-  const handleCheckbox = (checked: boolean, product: Product) => {
+  const handleCheckbox = (checked: boolean, orderItem: CartItem) => {
     setSelectedPrices((prev) =>
-      checked ? [...prev, product] : prev.filter((p) => p.id !== product.id)
+      checked ? [...prev, orderItem] : prev.filter((p) => p.id !== orderItem.id)
+    );
+  };
+
+  // 상품 수량변경
+  const handleReduceCount = (itemId: number) => {
+    setOrderItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              quantity: Math.max(item.quantity - 1, 1),
+              totalPrice: item.price * Math.max(item.quantity - 1, 1),
+            }
+          : item
+      )
+    );
+
+    setSelectedPrices((prevSelected) =>
+      prevSelected.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              quantity: Math.max(item.quantity - 1, 1),
+              totalPrice: item.price * Math.max(item.quantity - 1, 1),
+            }
+          : item
+      )
+    );
+  };
+
+  const handleIncreaseCount = (itemId: number) => {
+    setOrderItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+              totalPrice: item.price * (item.quantity + 1),
+            }
+          : item
+      )
+    );
+
+    setSelectedPrices((prevSelected) =>
+      prevSelected.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+              totalPrice: item.price * (item.quantity + 1),
+            }
+          : item
+      )
     );
   };
 
@@ -130,11 +158,11 @@ const Order: React.FC = () => {
             phone: formData.recipientPhone,
             name: formData.recipientName,
             memo: message,
-            orderDetails: products.map((item) => ({
-              productId: item.id,
-              productPrice: item.price,
-              productQuantity: item.quantity,
-              productTotalPrice: item.price * item.quantity,
+            orderDetails: orderItems.map((item) => ({
+              orderItemId: item.id,
+              orderItemPrice: item.price,
+              orderItemQuantity: item.quantity,
+              orderItemTotalPrice: item.price * item.quantity,
             })),
           };
           await order(updateData);
@@ -146,8 +174,8 @@ const Order: React.FC = () => {
     }
   };
 
-  // if (loading) return <div>로딩 중...</div>;
-  if (!products) return <div>상품을 찾을 수 없습니다.</div>;
+  if (loading) return <div>로딩 중...</div>;
+  if (!orderItems) return <div>상품을 찾을 수 없습니다.</div>;
 
   return (
     <>
@@ -166,15 +194,25 @@ const Order: React.FC = () => {
 
       <div className="order-container">
         <h2>주문하기</h2>
+
         {/* 결제정보 */}
-        {products.map((product) => (
-          <div className="order-list" key={product.id}>
-            <input type="checkbox" onChange={(e) => handleCheckbox(e.target.checked, product)} />
-            <img src={product.imgUrl} alt="상품 이미지" />
+        {orderItems.map((orderItem) => (
+          <div className="order-list" key={orderItem.id}>
+            <input type="checkbox" onChange={(e) => handleCheckbox(e.target.checked, orderItem)} />
+            <img src={orderItem.imgUrl} alt="상품 이미지" />
+
+            {/* 수량조절 */}
+            <div className="order-count">
+              <button onClick={() => handleReduceCount(orderItem.id)}>-</button>
+              <div>{orderItem.quantity}</div>
+              <button onClick={() => handleIncreaseCount(orderItem.id)}>+</button>
+            </div>
+
+            {/* 총 합계 */}
             <div>
-              {product.nm}
+              {orderItem.nm}
               <br />
-              가격: {product.price.toLocaleString()}원
+              가격: {orderItem.totalPrice.toLocaleString()}원
             </div>
           </div>
         ))}
@@ -184,6 +222,7 @@ const Order: React.FC = () => {
         >
           {/* 주문자 정보 */}
           <h3>주문자 정보</h3>
+
           <div>
             {/* 이름 */}
             <div className="order-row">
@@ -201,7 +240,7 @@ const Order: React.FC = () => {
               <label className="order-label">휴대폰 번호</label>
               <input
                 className="order-disabled-input"
-                value={user?.phone}
+                value={user?.phone || ''}
                 type="tel"
                 name="phone"
                 autoComplete="tel"
@@ -216,7 +255,7 @@ const Order: React.FC = () => {
                 className="order-disabled-input"
                 type="text"
                 name="address"
-                value={user?.address}
+                value={user?.address || ''}
                 readOnly
               />
             </div>
@@ -228,7 +267,7 @@ const Order: React.FC = () => {
                 className="order-disabled-input"
                 type="text"
                 name="addressDetail"
-                value={user?.addressDetail}
+                value={user?.addressDetail || ''}
                 readOnly
               />
             </div>
@@ -237,6 +276,7 @@ const Order: React.FC = () => {
           <button className="same-button" type="button" onClick={handleRecipientInfo}>
             주문자 정보와 동일
           </button>
+
           {/* 수신자 정보 */}
           <div>
             <h3>수신자 정보</h3>
@@ -260,7 +300,7 @@ const Order: React.FC = () => {
               <input
                 name="recipientPhone"
                 placeholder="010-1234-5678"
-                value={formData.recipientPhone}
+                value={formData.recipientPhone || ''}
                 className="order-input"
                 type="tel"
                 onChange={handleChange}
@@ -277,7 +317,7 @@ const Order: React.FC = () => {
                 placeholder="주소를 입력하세요"
                 className="order-input"
                 type="text"
-                value={formData.recipientAddress}
+                value={formData.recipientAddress || ''}
                 onChange={handleChange}
               />
               {errors.recipientAddress && <p className="order-errors">{errors.recipientAddress}</p>}
@@ -290,7 +330,7 @@ const Order: React.FC = () => {
                 placeholder="상세주소를 입력하세요"
                 className="order-input"
                 type="text"
-                value={formData.recipientAddressDetail}
+                value={formData.recipientAddressDetail || ''}
                 onChange={handleChange}
               />
               {errors.recipientAddressDetail && (
@@ -304,7 +344,7 @@ const Order: React.FC = () => {
                 className="order-input"
                 type="text"
                 placeholder="배송 메시지를 입력해주세요."
-                value={message}
+                value={message || ''}
                 onChange={(e) => setMessage(e.target.value)}
               />
             </div>
