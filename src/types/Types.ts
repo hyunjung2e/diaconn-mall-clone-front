@@ -24,6 +24,7 @@ export interface Product {
 
 export type CartItem = {
   id: number;
+  nm: string;
   description: string;
   price: number;
   quantity: number;
