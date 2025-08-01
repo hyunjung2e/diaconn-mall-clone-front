@@ -198,21 +198,30 @@ const Order: React.FC = () => {
         {/* 결제정보 */}
         {orderItems.map((orderItem) => (
           <div className="order-list" key={orderItem.id}>
+            {/* 체크박스 */}
             <input type="checkbox" onChange={(e) => handleCheckbox(e.target.checked, orderItem)} />
-            <img src={orderItem.imgUrl} alt="상품 이미지" />
 
-            {/* 수량조절 */}
-            <div className="order-count">
-              <button onClick={() => handleReduceCount(orderItem.id)}>-</button>
-              <div>{orderItem.quantity}</div>
-              <button onClick={() => handleIncreaseCount(orderItem.id)}>+</button>
+            {/* 이미지 */}
+            <div className="order-img-wrapper">
+              <img src={orderItem.imgUrl} alt="상품 이미지" />
             </div>
 
-            {/* 총 합계 */}
-            <div>
-              {orderItem.nm}
-              <br />
-              가격: {orderItem.totalPrice.toLocaleString()}원
+            {/* 상품명 */}
+            <div>{orderItem.nm}</div>
+
+            {/* 주문가격 */}
+            <div className="order-totalprice-box">
+              {/* 수량조절 */}
+              <div className="order-count">
+                <button onClick={() => handleReduceCount(orderItem.id)}>-</button>
+                <div>{orderItem.quantity}</div>
+                <button onClick={() => handleIncreaseCount(orderItem.id)}>+</button>
+              </div>
+
+              {/* 총 합계 */}
+              <div className="order-totalprice">
+                가격: {orderItem.totalPrice.toLocaleString()}원
+              </div>
             </div>
           </div>
         ))}

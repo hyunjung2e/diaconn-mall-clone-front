@@ -5,7 +5,7 @@ button {
 
 .order-list {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
   align-items: center;
   gap: 10px;
   padding: 10px;
@@ -13,6 +13,12 @@ button {
   border-radius: 5px;
   text-align: center;
   margin-top: 20px;
+}
+
+.order-img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .order-list img {
@@ -124,10 +130,18 @@ button {
   font-weight: 500;
 }
 
+.order-totalprice-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 250px;
+}
+
 .order-count {
   display: flex;
   align-items: center;
   gap: 8px;
+  justify-content: center;
 }
 
 .order-count button {
@@ -143,6 +157,12 @@ button {
 
 .order-count div {
   margin: 0px 20px 0px 20px;
+}
+
+.order-totalprice {
+  font-size: 22px;
+  color: #ff5722;
+  font-weight: bold;
 }
 
 /* 주문완료 */
