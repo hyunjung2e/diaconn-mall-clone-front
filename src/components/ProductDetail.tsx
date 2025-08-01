@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
 import { getProductDetail, getLoggedInUser, addToCart } from '../api/Api.ts';
 import { LoginUser, Product, CartItem } from '../types/Types.ts';
+import Header from './Common.tsx';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
@@ -30,10 +31,12 @@ const ProductDetail: React.FC = () => {
         // 상품 정보가 로드되면 cartItem 초기화
         setCartItem({
           id: data.id,
+          nm: data.nm,
           description: data.contentDesc,
           price: data.price,
           quantity: count,
           totalPrice: data.price * count,
+          imgUrl: data.imgUrl,
         });
       })
       .catch((err: any) => setError(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
@@ -99,51 +102,34 @@ const ProductDetail: React.FC = () => {
   };
 
   // 바로 구매
-  const handleBuyNow = () => {
-    navigate(`/order?productNo=${product?.id}`);
+  const handleBuyNow = async () => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+
+    if (window.confirm('바로 구매 하시겠습니까?')) {
+      // 세션 스토리지 저장
+      sessionStorage.setItem('buyNowItem', JSON.stringify(cartItem));
+      navigate('/order');
+    }
   };
 
   if (loading) return <div>로딩 중...</div>;
   if (error) return <div style={{ color: 'red' }}>오류: {error}</div>;
   if (!product) return <div>상품을 찾을 수 없습니다.</div>;
 
+  console.log('cartitem', cartItem);
+
   return (
     <>
-      <header>
-        <div className="container">
-          <a className="logo" onClick={() => navigate('/')}>
-            <img src="/img/logo.png" alt="로고" />
-          </a>
-          <div className="header-right">
-            <input
-              type="text"
-              placeholder="검색어를 입력해주세요."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSearch();
-              }}
-            />
-            <button onClick={handleSearch}>검색</button>
-
-            {user ? (
-              <>
-                <span onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }}>
-                  {user.name}님
-                </span>
-                <a onClick={() => alert('로그아웃 기능 구현 필요')}>로그아웃</a>
-              </>
-            ) : (
-              <a className="login" onClick={() => navigate('/login')}>
-                로그인
-              </a>
-            )}
-            <a className="cart" onClick={() => navigate('/cart')}>
-              장바구니
-            </a>
-          </div>
-        </div>
-      </header>
+      <Header
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
 
       <nav className="menu">
         <a onClick={() => handleCategory('0')}>간편식</a>
