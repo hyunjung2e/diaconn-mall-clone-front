@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/product_detail.css';
 import { getProductDetail, getLoggedInUser, addToCart } from '../api/Api.ts';
-import { LoginUser, Product } from '../types/Types.ts';
+import { LoginUser, Product, CartItem } from '../types/Types.ts';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
@@ -14,6 +14,8 @@ const ProductDetail: React.FC = () => {
   const [user, setUser] = useState<LoginUser | null>(null);
   const [categoryId, setCategoryId] = useState('');
   const [showCartPopup, setShowCartPopup] = useState(false);
+  const [count, setCount] = useState(1);
+  const [cartItem, setCartItem] = useState<CartItem | null>(null);
 
   useEffect(() => {
     if (!id || isNaN(Number(id))) {
@@ -23,7 +25,17 @@ const ProductDetail: React.FC = () => {
     }
 
     getProductDetail(Number(id))
-      .then((data) => setProduct(data))
+      .then((data) => {
+        setProduct(data);
+        // 상품 정보가 로드되면 cartItem 초기화
+        setCartItem({
+          id: data.id,
+          description: data.contentDesc,
+          price: data.price,
+          quantity: count,
+          totalPrice: data.price * count,
+        });
+      })
       .catch((err: any) => setError(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
       .finally(() => setLoading(false));
 
@@ -31,6 +43,17 @@ const ProductDetail: React.FC = () => {
       .then((data) => setUser(data))
       .catch(() => setUser(null));
   }, [id]);
+
+  // 수량 변경 시 cartItem 업데이트
+  useEffect(() => {
+    if (product && cartItem) {
+      setCartItem({
+        ...cartItem,
+        quantity: count,
+        totalPrice: product.price * count,
+      });
+    }
+  }, [count]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -43,10 +66,22 @@ const ProductDetail: React.FC = () => {
     navigate(`/${categoryId}`);
   };
 
-  const handleBuyNow = () => {
-    navigate(`/order?productNo=${product?.id}`);
+  // 상품 수량변경
+  const handleReduceCount = () => {
+    setCount((prevCount) => {
+      const newCount = Math.max(prevCount - 1, 1);
+      return newCount;
+    });
   };
 
+  const handleIncreaseCount = () => {
+    setCount((prevCount) => {
+      const newCount = prevCount + 1;
+      return newCount;
+    });
+  };
+
+  // 장바구니 담기
   const handleAddToCart = async () => {
     if (!user) {
       alert('로그인이 필요합니다.');
@@ -61,6 +96,11 @@ const ProductDetail: React.FC = () => {
       console.error('장바구니 담기 실패', err);
       alert('장바구니 담기에 실패했습니다.');
     }
+  };
+
+  // 바로 구매
+  const handleBuyNow = () => {
+    navigate(`/order?productNo=${product?.id}`);
   };
 
   if (loading) return <div>로딩 중...</div>;
@@ -119,8 +159,14 @@ const ProductDetail: React.FC = () => {
 
         <div className="product-details">
           <h1>{product.nm}</h1>
-          <p className="price">가격: {product.price.toLocaleString()}원</p>
-          <p>설명: {product.desc}</p>
+          {/* 수량 변경 */}
+          <div className="product-details-count">
+            <button onClick={handleReduceCount}>-</button>
+            <div>{count}</div>
+            <button onClick={handleIncreaseCount}>+</button>
+          </div>
+          <p className="price">가격: {cartItem?.totalPrice.toLocaleString()}원</p>
+          <p>설명: {product.contentDesc}</p>
 
           <button className="btn add-to-cart" onClick={handleAddToCart}>
             장바구니 담기

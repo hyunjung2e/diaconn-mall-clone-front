@@ -47,6 +47,27 @@ body {
   color: #222;
 }
 
+.product-details-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-details-count button {
+  background-color: lightgray;
+  border: 1px solid white;
+  cursor: pointer;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+.product-details-count div {
+  margin: 0px 20px 0px 20px;
+}
+
 .product-details .price {
   font-size: 22px;
   color: #ff5722;
