@@ -20,7 +20,6 @@ export interface Product {
   imgUrl: string;
   altText: string;
   quantity: number;
-  totalPrice: number;
 }
 
 export type CartItem = {
@@ -30,4 +29,5 @@ export type CartItem = {
   quantity: number;
   selected?: boolean;
   imgUrl?: string;
+  totalPrice: number;
 };
