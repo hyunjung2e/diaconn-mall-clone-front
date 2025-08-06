@@ -5,7 +5,7 @@
   height: 100vh;
 }
 
-.login-signup-box {
+.login-box {
   border: 1px solid #5a5a5a;
   display: flex;
   flex-direction: column;
