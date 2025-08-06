@@ -178,6 +178,21 @@ export const addToCart = async (userId: number, productId: number, count: number
   return response.json();
 };
 
+// 장바구니에서 상품 삭제
+export const deleteCartItem = async (userId: number, productId: number) => {
+  const response = await fetch(`${API_BASE_URL}/cart/${userId}/${productId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || '장바구니 상품 삭제 실패');
+  }
+
+  return response.json();
+};
+
 // 주문하기
 export const order = async (orderData: any) => {
   const response = await fetch(`${API_BASE_URL}/order`, {

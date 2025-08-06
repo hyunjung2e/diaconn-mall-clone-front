@@ -2,7 +2,7 @@ import '../css/cart.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Common.tsx';
-import { getCartItems, getLoggedInUser } from '../api/Api.ts';
+import { getCartItems, getLoggedInUser, deleteCartItem } from '../api/Api.ts';
 import { CartItem, LoginUser } from '../types/Types.ts';
 
 const Cart = () => {
@@ -11,13 +11,13 @@ const Cart = () => {
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
     getLoggedInUser()
       .then((data) => {
         if (!data || !data.id) {
-          // 비회원이면 로그인 페이지로 이동 (redirect 파라미터 포함)
           navigate(`/login?redirectTo=/cart`);
           return;
         }
@@ -60,13 +60,38 @@ const Cart = () => {
   };
 
   const handleQuantityChange = (id: number, value: number) => {
-    setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: value } : item)));
+    setCartItems(
+      cartItems.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, value) } : item))
+    );
   };
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => (item.selected ? total + item.price * item.quantity : total),
-    0
-  );
+  const increaseQuantity = (id: number) => {
+    handleQuantityChange(id, getQuantity(id) + 1);
+  };
+
+  const decreaseQuantity = (id: number) => {
+    handleQuantityChange(id, getQuantity(id) - 1);
+  };
+
+  const getQuantity = (id: number) => {
+    return cartItems.find((item) => item.id === id)?.quantity || 1;
+  };
+
+  const handleDelete = (productId: number) => {
+    if (!user) return;
+
+    const confirmed = window.confirm('정말로 이 상품을 삭제하시겠습니까?');
+    if (!confirmed) return;
+
+    deleteCartItem(user.id, productId)
+      .then(() => {
+        setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+      })
+      .catch((err) => {
+        console.error('삭제 실패:', err);
+        alert('상품 삭제에 실패했습니다.');
+      });
+  };
 
   const handleCategory = (categoryId: string) => {
     setCategoryId(categoryId);
@@ -86,6 +111,12 @@ const Cart = () => {
       },
     });
   };
+
+  const totalPrice = cartItems.reduce(
+    (total, item) => (item.selected ? total + item.price * item.quantity : total),
+    0
+  );
+
   return (
     <>
       <Header
@@ -130,14 +161,25 @@ const Cart = () => {
               </div>
               <div className="item-price-detail">
                 <p className="price">₩{(item.price * item.quantity).toLocaleString()}</p>
-                <input
-                  type="number"
-                  value={item.quantity}
-                  min={1}
-                  className="quantity"
-                  onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
-                />
+                <div className="quantity-control">
+                  <button className="quantity-btn" onClick={() => decreaseQuantity(item.id)}>
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    min={1}
+                    className="quantity"
+                    onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                  />
+                  <button className="quantity-btn" onClick={() => increaseQuantity(item.id)}>
+                    +
+                  </button>
+                </div>
               </div>
+              <button className="delete-btn" onClick={() => handleDelete(item.id)}>
+                삭제
+              </button>
             </div>
           ))}
         </div>
