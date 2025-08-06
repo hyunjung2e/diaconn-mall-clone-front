@@ -364,9 +364,6 @@ const Order: React.FC = () => {
           </div>
         </form>
       </div>
-      <footer>
-        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
-      </footer>
     </>
   );
 };
