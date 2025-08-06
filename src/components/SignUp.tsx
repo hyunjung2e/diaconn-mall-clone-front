@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import '../css/login.css';
-import { register, checkEmailDuplicate } from '../api/Api.ts';
+import '../css/signup.css';
+import '../css/main.css';
+import { register, checkEmailDuplicate, getLoggedInUser } from '../api/Api.ts';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Header from './Common.tsx';
+import { LoginUser } from '../types/Types.ts';
 
-export default function SignUp() {
+const SignUp: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,7 +15,31 @@ export default function SignUp() {
     password2: '',
     address: '',
   });
+
+  const [user, setUser] = useState<LoginUser | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [categoryId, setCategoryId] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getLoggedInUser()
+      .then((data) => {
+        if (data) setUser(data);
+      })
+      .catch(() => setUser(null));
+  }, [categoryId]);
+
+  const handleSearch = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(`/search?query=${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleCategory = (categoryId: string) => {
+    setCategoryId(categoryId);
+    navigate(`/${categoryId}`);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +65,6 @@ export default function SignUp() {
       alert('이메일을 입력해주세요.');
       return;
     }
-
     try {
       const result = await checkEmailDuplicate(formData.email);
       alert(result.message);
@@ -54,6 +81,7 @@ export default function SignUp() {
         const response = await register(formData);
         console.log('회원가입 성공:', response);
         alert('회원가입이 완료되었습니다!');
+        navigate('/login');
       } catch (error) {
         console.error('회원가입 실패:', error);
         alert('회원가입 중 오류가 발생했습니다.');
@@ -62,197 +90,116 @@ export default function SignUp() {
   };
 
   return (
-    <div className="body">
-      <div className="login-signup-box">
-        <h2
-          style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '30px' }}
-        >
-          회원가입
-        </h2>
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
+    <>
+      <Header
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
+
+      <nav className="menu">
+        <a onClick={() => handleCategory('0')}>간편식</a>
+        <a onClick={() => handleCategory('1')}>식단</a>
+        <a onClick={() => handleCategory('2')}>음료</a>
+        <a onClick={() => handleCategory('3')}>의료기기</a>
+      </nav>
+
+      <div className="body">
+        <div className="signup-box">
+          <h2 className="signup-title">회원가입</h2>
+
+          <form className="signup-submit" onSubmit={handleSubmit}>
             {/* 이름 */}
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>이름</label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-            />
-            {errors.name && (
-              <p style={{ color: 'red', fontSize: '12px' }}>{errors.name}</p>
-            )}
-          </div>
-          {/* 이메일 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              이메일
-            </label>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <div>
+              <label className="signup-label">이름</label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
-                style={{
-                  flex: 8,
-                  padding: '8px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  boxSizing: 'border-box',
-                  height: '40px',
-                }}
+                className="signup-input"
               />
-              <button
-                type="button"
-                onClick={handleCheckEmail}
-                style={{
-                  flex: 2,
-                  height: '40px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxSizing: 'border-box',
-                }}
-              >
-                이메일 중복검사
-              </button>
+              {errors.name && <p className="signup-error">{errors.name}</p>}
             </div>
-            {errors.email && (
-              <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
-                {errors.email}
-              </p>
-            )}
-          </div>
 
-          {/* 휴대폰번호 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              휴대폰번호
-            </label>
-            <input
-              type="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-            />
-            {errors.phone && (
-              <p style={{ color: 'red', fontSize: '12px' }}>{errors.phone}</p>
-            )}
-          </div>
-          {/* 비밀번호 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              비밀번호
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-            />
-            {errors.password && (
-              <p style={{ color: 'red', fontSize: '12px' }}>
-                {errors.password}
-              </p>
-            )}
-          </div>
+            {/* 이메일 */}
+            <div>
+              <label className="signup-label">이메일</label>
+              <div className="signup-email-group">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="signup-email-input"
+                />
+                <button type="button" onClick={handleCheckEmail} className="signup-email-button">
+                  이메일 중복검사
+                </button>
+              </div>
+              {errors.email && <p className="signup-error">{errors.email}</p>}
+            </div>
 
-          {/* 비밀번호 확인 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>
-              비밀번호 확인
-            </label>
-            <input
-              type="password"
-              name="password2"
-              value={formData.password2}
-              onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-            />
-            {errors.password2 && (
-              <p style={{ color: 'red', fontSize: '12px' }}>
-                {errors.password2}
-              </p>
-            )}
-          </div>
-          {/* 주소 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', fontWeight: '500' }}>주소</label>
-            <input
-              type="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              style={{
-                width: '450px',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-            />
-            {errors.address && (
-              <p style={{ color: 'red', fontSize: '12px' }}>{errors.address}</p>
-            )}
-          </div>
-          <button
-            type="submit"
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginTop: '10px',
-              marginBottom: '30px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            회원가입
-          </button>
-        </form>
+            {/* 휴대폰번호 */}
+            <div>
+              <label className="signup-label">휴대폰번호</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="signup-input"
+              />
+              {errors.phone && <p className="signup-error">{errors.phone}</p>}
+            </div>
+
+            {/* 비밀번호 */}
+            <div>
+              <label className="signup-label">비밀번호</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="signup-input"
+              />
+              {errors.password && <p className="signup-error">{errors.password}</p>}
+            </div>
+
+            {/* 비밀번호 확인 */}
+            <div>
+              <label className="signup-label">비밀번호 확인</label>
+              <input
+                type="password"
+                name="password2"
+                value={formData.password2}
+                onChange={handleChange}
+                className="signup-input"
+              />
+              {errors.password2 && <p className="signup-error">{errors.password2}</p>}
+            </div>
+
+            {/* 주소 */}
+            <div>
+              <label className="signup-label">주소</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="signup-input"
+              />
+              {errors.address && <p className="signup-error">{errors.address}</p>}
+            </div>
+
+            <button type="submit" className="signup-submit-button">
+              회원가입
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+};
+
+export default SignUp;

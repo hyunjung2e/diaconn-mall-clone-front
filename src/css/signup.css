@@ -1,0 +1,77 @@
+/* 전체 컨테이너 */
+.signup-box {
+  width: 450px;
+  margin: 0 auto;
+  padding: 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+/* 제목 */
+.signup-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* 폼 */
+.signup-submit {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 공통 라벨 */
+.signup-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+/* 공통 input */
+.signup-input,
+.signup-email-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* 이메일 중복 검사 박스 */
+.signup-email-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* 이메일 중복검사 버튼 */
+.signup-email-button {
+  width: 150px;
+  background-color: #1ccfcf;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 에러 메시지 */
+.signup-error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* 제출 버튼 */
+.signup-submit-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background-color: #1fc4be;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
