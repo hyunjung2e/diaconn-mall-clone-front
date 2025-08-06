@@ -117,10 +117,6 @@ const Main = () => {
           </ul>
         </div>
       </section>
-
-      <footer>
-        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
-      </footer>
     </>
   );
 };
