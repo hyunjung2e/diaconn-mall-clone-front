@@ -64,7 +64,7 @@ const Order: React.FC = () => {
     );
   };
 
-  // 상품 수량변경
+  // 상품 수량 감소
   const handleReduceCount = (itemId: number) => {
     setOrderItems((prevItems) =>
       prevItems.map((item) =>
@@ -91,6 +91,7 @@ const Order: React.FC = () => {
     );
   };
 
+  // 상품 수량 증가
   const handleIncreaseCount = (itemId: number) => {
     setOrderItems((prevItems) =>
       prevItems.map((item) =>
@@ -115,6 +116,17 @@ const Order: React.FC = () => {
           : item
       )
     );
+  };
+
+  // 상품 삭제
+  const handleDelete = (itemId: number, nm: string) => {
+    if (window.confirm(`${nm}를 주문 목록에서 삭제하시겠습니까?`)) {
+      // 주문 목록에서 삭제
+      setOrderItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+
+      // 선택된 상품 목록에서도 삭제
+      setSelectedPrices((prevSelected) => prevSelected.filter((item) => item.id !== itemId));
+    }
   };
 
   // 수신자 정보 입력값 변경 핸들러
@@ -175,8 +187,6 @@ const Order: React.FC = () => {
   };
 
   if (loading) return <div>로딩 중...</div>;
-  if (!orderItems) return <div>상품을 찾을 수 없습니다.</div>;
-
   return (
     <>
       <Header
@@ -194,41 +204,49 @@ const Order: React.FC = () => {
 
       <div className="order-container">
         <h2>주문하기</h2>
-
         {/* 결제정보 */}
-        {orderItems.map((orderItem) => (
-          <div className="order-list" key={orderItem.id}>
-            {/* 체크박스 */}
-            <input type="checkbox" onChange={(e) => handleCheckbox(e.target.checked, orderItem)} />
+        {orderItems.length === 0 ? (
+          <div className="order-empty-message">담은 상품이 없습니다.</div>
+        ) : (
+          orderItems.map((orderItem) => (
+            <div className="order-list" key={orderItem.id}>
+              {/* 체크박스 */}
+              <input
+                type="checkbox"
+                onChange={(e) => handleCheckbox(e.target.checked, orderItem)}
+              />
 
-            {/* 이미지 */}
-            <div className="order-img-wrapper">
-              <img src={orderItem.imgUrl} alt="상품 이미지" />
-            </div>
-
-            {/* 상품명 */}
-            <div>{orderItem.nm}</div>
-
-            {/* 주문가격 */}
-            <div className="order-totalprice-box">
-              {/* 수량조절 */}
-              <div className="order-count">
-                <button onClick={() => handleReduceCount(orderItem.id)}>-</button>
-                <div>{orderItem.quantity}</div>
-                <button onClick={() => handleIncreaseCount(orderItem.id)}>+</button>
+              {/* 이미지 */}
+              <div className="order-img-wrapper">
+                <img src={orderItem.imgUrl} alt="상품 이미지" />
               </div>
 
-              {/* 총 합계 */}
-              <div className="order-totalprice">
-                가격: {orderItem.totalPrice.toLocaleString()}원
+              {/* 상품명 */}
+              <div>{orderItem.nm}</div>
+
+              {/* 주문가격 */}
+              <div className="order-totalprice-box">
+                {/* 수량조절 */}
+                <div className="order-count">
+                  <button onClick={() => handleReduceCount(orderItem.id)}>-</button>
+                  <div>{orderItem.quantity}</div>
+                  <button onClick={() => handleIncreaseCount(orderItem.id)}>+</button>
+                </div>
+
+                {/* 총 합계 */}
+                <div className="order-totalprice">
+                  가격: {orderItem.totalPrice.toLocaleString()}원
+                </div>
+              </div>
+              {/* 상품삭제 */}
+              <div className="order-delete">
+                <button onClick={() => handleDelete(orderItem.id, orderItem.nm)}>삭제</button>
               </div>
             </div>
-          </div>
-        ))}
-        <form
-          onSubmit={handleOrder}
-          style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
-        >
+          ))
+        )}
+
+        <form style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           {/* 주문자 정보 */}
           <h3>주문자 정보</h3>
 
