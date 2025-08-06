@@ -73,6 +73,19 @@ const Cart = () => {
     navigate(`/${categoryId}`);
   };
 
+  const handleOrder = () => {
+    const selectedItems = cartItems.filter((item) => item.selected);
+    if (selectedItems.length === 0) {
+      alert('주문할 상품을 선택해주세요.');
+      return;
+    }
+
+    navigate('/order', {
+      state: {
+        items: selectedItems,
+      },
+    });
+  };
   return (
     <>
       <Header
@@ -131,7 +144,9 @@ const Cart = () => {
 
         <div className="cart-summary">
           <p className="total-price">총 금액: ₩{totalPrice.toLocaleString()}</p>
-          <button className="checkout-btn">결제하기</button>
+          <button className="checkout-btn" onClick={handleOrder}>
+            주문하기
+          </button>
         </div>
       </main>
 
