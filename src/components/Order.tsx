@@ -126,6 +126,9 @@ const Order: React.FC = () => {
 
       // 선택된 상품 목록에서도 삭제
       setSelectedPrices((prevSelected) => prevSelected.filter((item) => item.id !== itemId));
+
+      // 세션 스토리지에서 삭제
+      sessionStorage.removeItem('buyNowItem');
     }
   };
 
