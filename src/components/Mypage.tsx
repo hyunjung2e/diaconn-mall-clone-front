@@ -238,10 +238,6 @@ export default function Mypage() {
           </form>
         </div>
       </div>
-      {/* 푸터 */}
-      <footer>
-        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
-      </footer>
     </>
   );
 }
