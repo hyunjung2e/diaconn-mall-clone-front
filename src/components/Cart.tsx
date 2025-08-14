@@ -31,7 +31,7 @@ const Cart = () => {
         const items = cartData.map((item) => ({
           ...item,
           selected: false,
-          quantity: item.count || 1,
+          quantity: item.quantity || 1,
         }));
         setCartItems(items);
       })
@@ -191,10 +191,6 @@ const Cart = () => {
           </button>
         </div>
       </main>
-
-      <footer>
-        <div className="container">© 2025 쇼핑몰. All rights reserved.</div>
-      </footer>
     </>
   );
 };
