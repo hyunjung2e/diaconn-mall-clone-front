@@ -156,7 +156,10 @@ const Order: React.FC = () => {
     if (!formData.recipientAddressDetail)
       newErrors.recipientAddressDetail = '수신자 주소 상세를 입력하세요.';
     setErrors(newErrors);
-    if (totalPrice === 0) return false;
+    if (totalPrice === 0) {
+      window.alert('주문할 상품을 선택하세요.');
+      return false;
+    }
     return Object.keys(newErrors).length === 0;
   };
 
