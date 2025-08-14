@@ -92,9 +92,13 @@ button {
 }
 
 .order-container {
-  padding: 40px 80px;
-  display: flex;
-  flex-direction: column;
+  margin: 40px auto;
+  border: 1px solid #5a5a5a;
+  width: 750px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 40px;
 }
 
 .order-row {
