@@ -7,7 +7,7 @@ import { CartItem, LoginUser } from '../types/Types.ts';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectAll, setSelectAll] = useState(true);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -34,6 +34,7 @@ const Cart = () => {
           quantity: item.quantity || 1,
         }));
         setCartItems(items);
+        console.log(items);
       })
       .catch((err) => {
         console.error('장바구니 불러오기 실패', err);
@@ -142,7 +143,7 @@ const Cart = () => {
             checked={selectAll}
             onChange={handleSelectAll}
           />
-          <label htmlFor="select-all">전체 선택</label>
+          <label htmlFor="select-all" >전체 선택</label>
         </div>
 
         <div className="cart-items">
