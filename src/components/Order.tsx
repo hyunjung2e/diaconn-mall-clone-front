@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import '../css/order.css';
 import Header from './Common.tsx';
 import { LoginUser, CartItem } from '../types/Types.ts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import { getLoggedInUser, order } from '../api/Api.ts';
 
 const Order: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 상태관리
   const [orderItems, setOrderItems] = useState<CartItem[]>([]);
@@ -32,15 +33,22 @@ const Order: React.FC = () => {
         if (data) setUser(data);
       })
       .catch(() => setUser(null));
+    
+     // Cart에서 넘긴 상품들
+  const itemsFromCart = location.state?.items ?? [];
 
-    // 바로 구매 요청한 상품 정보 세션 스토리지에서 가져오기
-    const storedItem = sessionStorage.getItem('buyNowItem');
-    if (storedItem) {
-      const item = JSON.parse(storedItem);
-      setOrderItems([item]);
-    }
-    setLoading(false);
-  }, []);
+  // ProductDetail에서 바로구매 상품
+  const storedItem = sessionStorage.getItem('buyNowItem');
+  const itemsFromBuyNow = storedItem ? [JSON.parse(storedItem)] : [];
+
+  // 두 배열 합치기
+  const mergedItems = [...itemsFromCart, ...itemsFromBuyNow];
+
+  // ✅ 여기서 합친 배열을 state에 세팅해야 함
+  setOrderItems(mergedItems);
+
+  setLoading(false);
+}, [location.state]);
 
   // ***** 헤더 *****
   // 검색
@@ -241,7 +249,7 @@ const Order: React.FC = () => {
 
                 {/* 총 합계 */}
                 <div className="order-totalprice">
-                  가격: {orderItem.totalPrice.toLocaleString()}원
+                  가격: {(orderItem.price * orderItem.quantity).toLocaleString()}원
                 </div>
               </div>
               {/* 상품삭제 */}

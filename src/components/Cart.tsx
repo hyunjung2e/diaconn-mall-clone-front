@@ -105,7 +105,7 @@ const Cart = () => {
       alert('주문할 상품을 선택해주세요.');
       return;
     }
-
+console.log('장바구니에 담기는 Items',selectedItems);
     navigate('/order', {
       state: {
         items: selectedItems,

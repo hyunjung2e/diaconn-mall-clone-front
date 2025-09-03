@@ -152,7 +152,7 @@ const ProductDetail: React.FC = () => {
             <button onClick={handleIncreaseCount}>+</button>
           </div>
           <p className="price">가격: {cartItem?.totalPrice.toLocaleString()}원</p>
-          <p>설명: {product.desc}</p>
+          <p>설명: {product.contentDesc}</p>
 
           <button className="btn add-to-cart" onClick={handleAddToCart}>
             장바구니 담기
