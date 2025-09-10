@@ -7,7 +7,6 @@ import { CartItem, LoginUser } from '../types/Types.ts';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [selectAll, setSelectAll] = useState(true);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -21,26 +20,29 @@ const Cart = () => {
           navigate(`/login?redirectTo=/cart`);
           return;
         }
-
         setUser(data);
         return getCartItems(data.id);
       })
       .then((cartData) => {
         if (!cartData) return;
 
-        const items = cartData.map((item) => ({
+        const items: CartItem[] = cartData.map((item: any) => ({
           ...item,
-          selected: false,
-          quantity: item.quantity || 1,
+          // 서버에서 count로 오는 수량을 화면 quantity로 매핑
+          quantity: Math.max(1, Number(item.count) || 1),
+          selected: true,
         }));
         setCartItems(items);
-        console.log(items);
       })
       .catch((err) => {
         console.error('장바구니 불러오기 실패', err);
         navigate(`/login?redirectTo=/cart`);
       });
-  }, []);
+  }, [navigate]);
+
+  // 파생값: 모든 아이템이 선택됐는지 계산 (state 아님)
+  const selectAll =
+    cartItems.length > 0 && cartItems.every((item) => item.selected === true);
 
   const handleSearch = () => {
     const trimmed = searchQuery.trim();
@@ -50,21 +52,25 @@ const Cart = () => {
 
   const handleSelectAll = () => {
     const newState = !selectAll;
-    setSelectAll(newState);
-    setCartItems(cartItems.map((item) => ({ ...item, selected: newState })));
+    setCartItems((prev) => prev.map((it) => ({ ...it, selected: newState })));
   };
 
+  // 개별 선택
   const handleItemSelect = (id: number) => {
-    setCartItems(
-      cartItems.map((item) => (item.id === id ? { ...item, selected: !item.selected } : item))
+    setCartItems((prev) =>
+      prev.map((it) => (it.id === id ? { ...it, selected: !it.selected } : it))
     );
   };
 
   const handleQuantityChange = (id: number, value: number) => {
-    setCartItems(
-      cartItems.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, value) } : item))
+    const v = Math.max(1, Number.isFinite(value) ? value : 1);
+    setCartItems((prev) =>
+      prev.map((it) => (it.id === id ? { ...it, quantity: v } : it))
     );
   };
+
+  const getQuantity = (id: number) =>
+    cartItems.find((it) => it.id === id)?.quantity ?? 1;
 
   const increaseQuantity = (id: number) => {
     handleQuantityChange(id, getQuantity(id) + 1);
@@ -74,19 +80,14 @@ const Cart = () => {
     handleQuantityChange(id, getQuantity(id) - 1);
   };
 
-  const getQuantity = (id: number) => {
-    return cartItems.find((item) => item.id === id)?.quantity || 1;
-  };
-
   const handleDelete = (productId: number) => {
     if (!user) return;
-
     const confirmed = window.confirm('정말로 이 상품을 삭제하시겠습니까?');
     if (!confirmed) return;
 
     deleteCartItem(user.id, productId)
       .then(() => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+        setCartItems((prev) => prev.filter((it) => it.id !== productId));
       })
       .catch((err) => {
         console.error('삭제 실패:', err);
@@ -100,21 +101,17 @@ const Cart = () => {
   };
 
   const handleOrder = () => {
-    const selectedItems = cartItems.filter((item) => item.selected);
+    const selectedItems = cartItems.filter((it) => it.selected);
     if (selectedItems.length === 0) {
       alert('주문할 상품을 선택해주세요.');
       return;
     }
-console.log('장바구니에 담기는 Items',selectedItems);
-    navigate('/order', {
-      state: {
-        items: selectedItems,
-      },
-    });
+    console.log('장바구니에 담기는 Items', selectedItems);
+    navigate('/order', { state: { items: selectedItems } });
   };
 
   const totalPrice = cartItems.reduce(
-    (total, item) => (item.selected ? total + item.price * item.quantity : total),
+    (total, it) => (it.selected ? total + it.price * it.quantity : total),
     0
   );
 
@@ -140,10 +137,11 @@ console.log('장바구니에 담기는 Items',selectedItems);
             type="checkbox"
             id="select-all"
             className="select-all"
+            // 파생값으로 바인딩
             checked={selectAll}
             onChange={handleSelectAll}
           />
-          <label htmlFor="select-all" >전체 선택</label>
+          <label htmlFor="select-all">전체 선택</label>
         </div>
 
         <div className="cart-items">
@@ -152,18 +150,25 @@ console.log('장바구니에 담기는 Items',selectedItems);
               <input
                 type="checkbox"
                 className="item-select"
-                checked={item.selected}
+                checked={!!item.selected}
                 onChange={() => handleItemSelect(item.id)}
               />
               <img src={item.imgUrl || '상품이미지.jpg'} alt="상품 이미지" />
               <div className="item-info">
-                <p className="item-description">{item.description || item.nm}</p>
+                <p className="item-description">
+                  {item.description || item.nm}
+                </p>
                 <p className="item-price">₩{item.price.toLocaleString()}</p>
               </div>
               <div className="item-price-detail">
-                <p className="price">₩{(item.price * item.quantity).toLocaleString()}</p>
+                <p className="price">
+                  ₩{(item.price * item.quantity).toLocaleString()}
+                </p>
                 <div className="quantity-control">
-                  <button className="quantity-btn" onClick={() => decreaseQuantity(item.id)}>
+                  <button
+                    className="quantity-btn"
+                    onClick={() => decreaseQuantity(item.id)}
+                  >
                     -
                   </button>
                   <input
@@ -171,14 +176,22 @@ console.log('장바구니에 담기는 Items',selectedItems);
                     value={item.quantity}
                     min={1}
                     className="quantity"
-                    onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                    onChange={(e) =>
+                      handleQuantityChange(item.id, Number(e.target.value))
+                    }
                   />
-                  <button className="quantity-btn" onClick={() => increaseQuantity(item.id)}>
+                  <button
+                    className="quantity-btn"
+                    onClick={() => increaseQuantity(item.id)}
+                  >
                     +
                   </button>
                 </div>
               </div>
-              <button className="delete-btn" onClick={() => handleDelete(item.id)}>
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(item.id)}
+              >
                 삭제
               </button>
             </div>
