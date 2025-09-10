@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/order.css';
 import Header from './Common.tsx';
 import { LoginUser, CartItem } from '../types/Types.ts';
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getLoggedInUser, order } from '../api/Api.ts';
 
 const Order: React.FC = () => {
@@ -33,22 +33,43 @@ const Order: React.FC = () => {
         if (data) setUser(data);
       })
       .catch(() => setUser(null));
-    
-     // Cart에서 넘긴 상품들
-  const itemsFromCart = location.state?.items ?? [];
 
-  // ProductDetail에서 바로구매 상품
-  const storedItem = sessionStorage.getItem('buyNowItem');
-  const itemsFromBuyNow = storedItem ? [JSON.parse(storedItem)] : [];
+    // Cart에서 넘긴 상품들
+    const itemsFromCart = location.state?.items ?? [];
 
-  // 두 배열 합치기
-  const mergedItems = [...itemsFromCart, ...itemsFromBuyNow];
+    // ProductDetail에서 바로구매 상품
+    const storedItem = sessionStorage.getItem('buyNowItem');
+    const itemsFromBuyNow = storedItem ? [JSON.parse(storedItem)] : [];
 
-  // ✅ 여기서 합친 배열을 state에 세팅해야 함
-  setOrderItems(mergedItems);
+    // 두 배열 합치기
+    const mergedItems = [...itemsFromCart, ...itemsFromBuyNow];
 
-  setLoading(false);
-}, [location.state]);
+    // ✅ 여기서 합친 배열을 state에 세팅해야 함
+    setOrderItems(mergedItems);
+
+    setLoading(false);
+  }, [location.state]);
+
+  // 화면 이탈(뒤로가기/새로고침/탭 닫기 등) 시 즉시 세션 제거
+  useEffect(() => {
+    const clearBuyNowItem = () => {
+      sessionStorage.removeItem('buyNowItem');
+    };
+
+    const handlePopState = () => clearBuyNowItem();
+    const handlePageHide = () => clearBuyNowItem();
+    const handleBeforeUnload = () => clearBuyNowItem();
+
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('pagehide', handlePageHide);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('pagehide', handlePageHide);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   // ***** 헤더 *****
   // 검색
