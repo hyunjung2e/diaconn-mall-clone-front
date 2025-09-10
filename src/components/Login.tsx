@@ -14,6 +14,9 @@ const Login: React.FC = () => {
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [isPwForgotModalOpen, setIsPwForgotModalOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotPhone, setForgotPhone] = useState('');
 
   useEffect(() => {
     getLoggedInUser()
@@ -47,6 +50,23 @@ const Login: React.FC = () => {
       console.error(error);
     }
   };
+  // 비밀번호 찾기
+  const handleOpenPwForgot = () => {
+    setIsPwForgotModalOpen(true);
+  };
+  const handleClosePwForgot = () => {
+    setIsPwForgotModalOpen(false);
+    setForgotEmail('');
+    setForgotPhone('');
+  };
+  const handleSendTempPwPassword = () => {
+    if (!forgotEmail.trim() || !forgotPhone.trim()) {
+      alert('이메일과 휴대폰 번호를 입력해주세요.');
+      return;
+    }
+    alert('임시 비밀번호가 메일로 전달되었습니다.');
+    handleClosePwForgot();
+  };
   return (
     <>
       <Header
@@ -66,7 +86,6 @@ const Login: React.FC = () => {
       <div className="body">
         <div className="login-box">
           <img className="logo" src="/img/logo.png" alt="디아콘몰 로고" />
-
           <input
             type="email"
             className="login-signup-input"
@@ -75,7 +94,6 @@ const Login: React.FC = () => {
             placeholder="이메일을 입력해주세요."
             autoComplete="username"
           />
-
           <input
             type="password"
             className="login-signup-input"
@@ -84,7 +102,6 @@ const Login: React.FC = () => {
             placeholder="비밀번호를 입력해주세요."
             autoComplete="current-password"
           />
-
           <div className="login-signup-button-box">
             <button
               className="kakao-button"
@@ -99,11 +116,47 @@ const Login: React.FC = () => {
             </button>
           </div>
 
-          <Link className="signup_link" to="/signup">
-            회원이 아니신가요?
-          </Link>
+          {/* 회원가입, 비밀번호 찾기 */}
+          <div>
+            <Link className="signup_link" to="/signup">
+              회원이 아니신가요?
+            </Link>
+            <button className="forgot-password" onClick={handleOpenPwForgot}>
+              비밀번호 찾기
+            </button>
+          </div>
         </div>
       </div>
+
+      {isPwForgotModalOpen && (
+        <div className="modal-overlay" onClick={handleClosePwForgot}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3 className="modal-title">비밀번호 찾기</h3>
+            <input
+              type="email"
+              className="modal-input"
+              placeholder="이메일을 입력해주세요."
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+            />
+            <input
+              type="tel"
+              className="modal-input"
+              placeholder="휴대폰 번호를 입력해주세요."
+              value={forgotPhone}
+              onChange={(e) => setForgotPhone(e.target.value)}
+            />
+            <div className="modal-actions">
+              <button className="modal-button secondary" onClick={handleClosePwForgot}>
+                취소
+              </button>
+              <button className="modal-button primary" onClick={handleSendTempPwPassword}>
+                전송
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
