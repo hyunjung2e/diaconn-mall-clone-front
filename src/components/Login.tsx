@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api/Api.ts';
+import { forgotPassword, login } from '../api/Api.ts';
 import '../css/login.css';
 import { getLoggedInUser } from '../api/Api.ts';
 import Header from './Common.tsx';
@@ -59,14 +59,23 @@ const Login: React.FC = () => {
     setForgotEmail('');
     setForgotPhone('');
   };
-  const handleSendTempPwPassword = () => {
+  const handleSendTempPwPassword = async () => {
     if (!forgotEmail.trim() || !forgotPhone.trim()) {
       alert('이메일과 휴대폰 번호를 입력해주세요.');
       return;
     }
-    alert('임시 비밀번호가 메일로 전달되었습니다.');
-    handleClosePwForgot();
+    try {
+      const data = await forgotPassword({ email: forgotEmail, phone: forgotPhone });
+      if (data.success) {
+        alert(data.message || '임시 비밀번호가 전송되었습니다. 이메일을 확인해주세요.');
+      }
+      handleClosePwForgot();
+    } catch (error: any) {
+      alert(error.message);
+      console.error(error);
+    }
   };
+
   return (
     <>
       <Header

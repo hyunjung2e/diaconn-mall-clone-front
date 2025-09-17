@@ -87,6 +87,23 @@ export const logout = async () => {
   return response.json();
 };
 
+// 비밀번호 찾기
+export const forgotPassword = async (loginData: { email: string; phone: string }) => {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(loginData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || '비밀번호 찾기 요청 실패');
+  }
+
+  return data;
+};
+
 // ***** 메인 & 상품 관련 *****
 
 // 메인-배너 가져오기
