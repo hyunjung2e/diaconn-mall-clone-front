@@ -28,7 +28,8 @@ export type CartItem = {
   description: string;
   price: number;
   quantity: number;
-  selected?: boolean;
+   count: number; // 서버에서 받은 원본 수량
+  selected?: boolean; // 사용자가 UI에서 조작하는 현재 수량
   imgUrl?: string;
   totalPrice: number;
 };

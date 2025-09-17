@@ -28,8 +28,8 @@ const Cart = () => {
 
         const items: CartItem[] = cartData.map((item: any) => ({
           ...item,
-          // 서버에서 count로 오는 수량을 화면 quantity로 매핑
-          quantity: Math.max(1, Number(item.count) || 1),
+          count: item.count,
+          quantity:item.count,
           selected: true,
         }));
         setCartItems(items);
