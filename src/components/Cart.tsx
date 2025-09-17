@@ -179,6 +179,7 @@ const Cart = () => {
                     onChange={(e) =>
                       handleQuantityChange(item.id, Number(e.target.value))
                     }
+                    readOnly
                   />
                   <button
                     className="quantity-btn"
