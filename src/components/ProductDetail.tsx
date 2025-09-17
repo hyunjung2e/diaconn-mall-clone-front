@@ -37,6 +37,7 @@ const ProductDetail: React.FC = () => {
           quantity: count,
           totalPrice: data.price * count,
           imgUrl: data.imgUrl,
+           count: count
         });
       })
       .catch((err: any) => setError(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
@@ -53,6 +54,7 @@ const ProductDetail: React.FC = () => {
       setCartItem({
         ...cartItem,
         quantity: count,
+        count: count,
         totalPrice: product.price * count,
       });
     }
@@ -93,7 +95,7 @@ const ProductDetail: React.FC = () => {
     }
 
     try {
-      await addToCart(user.id, product!.id, 1);
+      await addToCart(user.id, product!.id, count);
       setShowCartPopup(true);
     } catch (err) {
       console.error('장바구니 담기 실패', err);

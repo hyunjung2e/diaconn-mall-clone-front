@@ -221,7 +221,7 @@ export const order = async (orderData: any) => {
   return response.json();
 };
 
-// Api.ts에 추가
+
 export const updateCartItem = async (userId: number, itemId: number, quantity: number) => {
   const response = await fetch(`/api/cart/${userId}/items/${itemId}`, {
     method: 'PUT',
