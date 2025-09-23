@@ -1,6 +1,6 @@
 import '../css/signup.css';
 import '../css/main.css';
-import { register, checkEmailDuplicate, getLoggedInUser } from '../api/Api.ts';
+import { register, checkEmailDuplicate, getLoggedInUser, sendEmailAuthCode } from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Header from './Common.tsx';
@@ -14,6 +14,7 @@ const SignUp: React.FC = () => {
     password: '',
     password2: '',
     address: '',
+    code: '',
   });
 
   const [user, setUser] = useState<LoginUser | null>(null);
@@ -22,6 +23,7 @@ const SignUp: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [code, setCode] = useState('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 상태
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,6 +59,7 @@ const SignUp: React.FC = () => {
     if (formData.password !== formData.password2)
       newErrors.password2 = '비밀번호가 일치하지 않습니다.';
     if (!formData.address) newErrors.address = '주소를 입력하세요';
+    if (!formData.code) newErrors.code = '인증번호를 입력하세요';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,6 +102,22 @@ const SignUp: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCode('');
+  };
+
+  const handleAuthCode = async () => {
+    if (!code.trim()) {
+      alert('인증번호를 입력해주세요.');
+      return;
+    }
+    try {
+      const data = await sendEmailAuthCode(code);
+      if (data.success) alert(data.message);
+      // setIsEmailVerified(true); // 인증 성공 상태로 변경
+      handleCloseModal();
+    } catch (error: any) {
+      alert(error.message);
+      console.error(error);
+    }
   };
 
   return (
@@ -211,20 +230,21 @@ const SignUp: React.FC = () => {
                   <h3 className="modal-title">인증번호 입력</h3>
                   <input
                     type="tel"
+                    value={formData.code}
                     className="modal-input"
                     placeholder="이메일로 전달받은 인증번호를 입력해주세요."
-                    value={code}
                     onChange={(e) => setCode(e.target.value)}
                   />
                   <div className="modal-actions">
                     <button className="modal-button secondary" onClick={handleCloseModal}>
                       취소
                     </button>
-                    <button className="modal-button primary" onClick={() => alert('구현 예정')}>
+                    <button className="modal-button primary" onClick={handleAuthCode}>
                       인증
                     </button>
                   </div>
                 </div>
+                {errors.code && <p className="signup-error">{errors.code}</p>}
               </div>
             )}
 
