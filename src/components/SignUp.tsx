@@ -20,6 +20,8 @@ const SignUp: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [categoryId, setCategoryId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [code, setCode] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,6 +70,7 @@ const SignUp: React.FC = () => {
     try {
       const result = await checkEmailDuplicate(formData.email);
       alert(result.message);
+      if (result.isDuplicate === false) handleOpenModal(); // 인증번호 모달 열기
     } catch (error) {
       console.error('이메일 중복 확인 실패:', error);
       alert('이메일 중복 확인 중 오류가 발생했습니다.');
@@ -87,6 +90,15 @@ const SignUp: React.FC = () => {
         alert('회원가입 중 오류가 발생했습니다.');
       }
     }
+  };
+
+  // 인증번호 입력
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setCode('');
   };
 
   return (
@@ -191,6 +203,30 @@ const SignUp: React.FC = () => {
               />
               {errors.address && <p className="signup-error">{errors.address}</p>}
             </div>
+
+            {/* 이메일 인증번호 모달창 */}
+            {isModalOpen && (
+              <div className="modal-overlay" onClick={handleCloseModal}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="modal-title">인증번호 입력</h3>
+                  <input
+                    type="tel"
+                    className="modal-input"
+                    placeholder="이메일로 전달받은 인증번호를 입력해주세요."
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                  />
+                  <div className="modal-actions">
+                    <button className="modal-button secondary" onClick={handleCloseModal}>
+                      취소
+                    </button>
+                    <button className="modal-button primary" onClick={() => alert('구현 예정')}>
+                      인증
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <button type="submit" className="signup-submit-button">
               회원가입
