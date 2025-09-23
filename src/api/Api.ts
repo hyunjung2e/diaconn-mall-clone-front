@@ -23,6 +23,23 @@ export const checkEmailDuplicate = async (email: string) => {
   return await response.json();
 };
 
+// 이메일 인증번호 발송
+export const sendEmailAuthCode = async (code: string) => {
+  const response = await fetch(`${API_BASE_URL}/user/email-authcode`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(code),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || '인증번호 발송 실패');
+  }
+
+  return data;
+};
+
 // 로그인
 export const login = async (loginData: { email: string; password: string }) => {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -221,12 +238,11 @@ export const order = async (orderData: any) => {
   return response.json();
 };
 
-
 export const updateCartItem = async (userId: number, itemId: number, quantity: number) => {
   const response = await fetch(`/api/cart/${userId}/items/${itemId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ count: quantity })
+    body: JSON.stringify({ count: quantity }),
   });
   return response.json();
 };
