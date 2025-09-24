@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import FilterWidget from './FilterWidget.tsx';
 import Pagination from './Pagination.tsx';
+import Header from './Common.tsx';
+import '../css/myorder.css';
+import '../css/filterwidget.css';
 
 interface Order {
   orderId: string;
@@ -13,7 +16,19 @@ interface Order {
 }
 
 export default function MyOrder() {
-  // 주문 내역 예시 데이터
+  const [user] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    console.log('검색 실행:', trimmed);
+  };
+
+  const handleCategory = (categoryId: string) => {
+    console.log('선택된 카테고리:', categoryId);
+  };
+
   const [orders] = useState<Order[]>([
     {
       orderId: 'ORD12345',
@@ -64,12 +79,29 @@ export default function MyOrder() {
   };
 
   return (
-    <div
-      style={{
-        minWidth: '750px',
-        padding: '20px',
-      }}
-    >
+      <>
+      <Header
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
+
+      <nav
+        className="menu"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <a onClick={() => handleCategory('0')}>간편식</a>
+        <a onClick={() => handleCategory('1')}>식단</a>
+        <a onClick={() => handleCategory('2')}>음료</a>
+        <a onClick={() => handleCategory('3')}>의료기기</a>
+      </nav>
+      
+     <div style={{ minWidth: '750px', padding: '20px' }}>
+
       <FilterWidget
         onFilter={function (filters: any): void {
           throw new Error('Function not implemented.');
@@ -236,12 +268,12 @@ export default function MyOrder() {
           ))}
         </tbody>
       </table>
-      {/* 페이지네이션 */}
       <Pagination
         totalPages={totalPages}
         onPageChange={setCurrentPage}
         currentPage={0}
       />
     </div>
+    </>
   );
 }

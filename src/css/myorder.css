@@ -1,0 +1,233 @@
+body { background:#f8f8f8; color:#1f2a37; }
+
+.myorder{
+  min-width:750px;
+  max-width:1000px;
+  margin:30px auto 60px;
+  padding:20px;
+}
+.myorder > :first-child label {
+  font-weight: 600;
+  color: #00796b;         
+  font-size: 14px;
+  margin-right: 6px;
+  display: inline-block;
+  min-width: 80px;         
+  text-align: right;       
+}
+
+.myorder h2{
+  font-size:20px !important;
+  font-weight:bold !important;
+  text-align:center !important;
+  margin:20px 0 !important;
+  color:#00796b;
+}
+
+
+.myorder > :first-child{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px 14px;
+  margin-bottom:18px;
+}
+
+.myorder > :first-child label{
+  font-weight:700;
+  color:#333;
+  margin-right:6px;
+}
+
+.myorder > :first-child input[type="date"],
+.myorder > :first-child input[type="text"],
+.myorder > :first-child input[type="number"],
+.myorder > :first-child select{
+  height:38px;
+  padding:0 12px;
+  border:1px solid #ddd;
+  border-radius:6px;
+  background:#fff;
+  outline:none;
+}
+
+.myorder > :first-child input:focus,
+.myorder > :first-child select:focus{
+  border-color:#009688;
+  box-shadow:0 0 0 3px rgba(0,150,136,0.15);
+}
+
+
+.myorder > :first-child button{
+  height:38px;
+  padding:0 16px;
+  border:none;
+  border-radius:6px;
+  background:#009688;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+.myorder > :first-child button:hover{ background:#00796b; }
+
+
+.myorder table{
+  width:100% !important;
+  border-collapse:collapse !important;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  overflow:hidden;
+  font-size:15px;
+}
+
+.myorder thead th{
+  background:#009688;
+  color:#fff;
+  padding:12px 10px !important;
+  border:none !important;
+  text-align:center !important;
+  font-weight:bold !important;
+}
+
+.myorder tbody td{
+  padding:12px 10px !important;
+  border-top:1px solid #ddd !important;
+  text-align:center !important;
+  color:#1f2a37;
+}
+
+.myorder tbody tr:first-child td{ border-top:none !important; }
+.myorder tbody tr:hover{ background:#f9f9f9; }
+
+.myorder tbody td:nth-child(1){ font-weight:700; color:#00796b; }
+.myorder tbody td:nth-child(3){ text-align:left !important; }   
+.myorder tbody td:nth-child(6){ font-weight:900; color:#333; }    
+
+
+.myorder > :last-child{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+}
+
+.myorder > :last-child button{
+  min-width:44px;
+  height:36px;
+  padding:0 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  background:#fff;
+  color:#333;
+  font-weight:700;
+  cursor:pointer;
+}
+.myorder > :last-child button:hover{
+  border-color:#00796b;
+  color:#00796b;
+}
+
+
+.myorder > :last-child button.is-active,
+.myorder > :last-child button.active,
+.myorder > :last-child button[aria-current="page"]{
+  background:#009688;
+  color:#fff;
+  border-color:#009688;
+}
+
+
+.myorder > :last-child span,
+.myorder > :last-child b{
+  color:#555;
+  font-weight:600;
+}
+
+.filter-widget {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.filter-card {
+  flex: 1;
+  max-width: 320px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filter-group {
+  margin-bottom: 16px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #00796b; 
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: #009688;
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15);
+}
+
+.filter-apply-btn {
+  align-self: center;
+  height: 42px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 8px;
+  background: #009688;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.filter-apply-btn:hover {
+  background: #00796b;
+}
+
+
+
+@media (max-width: 860px){
+  .myorder table, .myorder thead, .myorder tbody,
+  .myorder th, .myorder td, .myorder tr{
+    display:block; width:100%;
+  }
+  .myorder thead{ display:none; }
+  .myorder tbody tr{
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:12px;
+    padding:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    background:#fff;
+  }
+  .myorder tbody td{
+    border:none !important;
+    padding:6px 0 !important;
+    text-align:left !important;
+  }
+}
