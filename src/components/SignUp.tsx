@@ -1,6 +1,13 @@
+import React from 'react';
 import '../css/signup.css';
 import '../css/main.css';
-import { register, checkEmailDuplicate, getLoggedInUser, sendEmailAuthCode } from '../api/Api.ts';
+import {
+  register,
+  checkEmailDuplicate,
+  getLoggedInUser,
+  sendEmailAuthCode,
+  verifyEmailAuthCode,
+} from '../api/Api.ts';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Header from './Common.tsx';
@@ -59,12 +66,12 @@ const SignUp: React.FC = () => {
     if (formData.password !== formData.password2)
       newErrors.password2 = '비밀번호가 일치하지 않습니다.';
     if (!formData.address) newErrors.address = '주소를 입력하세요';
-    if (!formData.code) newErrors.code = '인증번호를 입력하세요';
-
+    if (!isEmailVerified) newErrors.email = '이메일 인증을 완료해주세요.';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // 이메일 중복 체크 및 인증번호 발송
   const handleCheckEmail = async () => {
     if (!formData.email) {
       alert('이메일을 입력해주세요.');
@@ -72,14 +79,37 @@ const SignUp: React.FC = () => {
     }
     try {
       const result = await checkEmailDuplicate(formData.email);
+      console.log('이메일 중복 체크 결과:', result);
       alert(result.message);
-      if (result.isDuplicate === false) handleOpenModal(); // 인증번호 모달 열기
+      if (result.isDuplicate === false) {
+        handleOpenModal();
+        await sendEmailAuthCode(formData.email); // 인증번호 발송
+      }
     } catch (error) {
       console.error('이메일 중복 확인 실패:', error);
       alert('이메일 중복 확인 중 오류가 발생했습니다.');
     }
   };
 
+  // 인증번호 검증
+  const handleAuthCode = async (code: string) => {
+    if (!code.trim()) {
+      alert('인증번호를 입력해주세요.');
+      return;
+    }
+    try {
+      const data = await verifyEmailAuthCode(formData.email, code);
+      console.log('인증번호 검증 결과:', data);
+      alert(data.message);
+      setIsEmailVerified(true); // 인증 성공 상태로 변경
+      handleCloseModal();
+    } catch (error: any) {
+      alert(error.message);
+      console.error(error);
+    }
+  };
+
+  // 회원가입 제출
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
@@ -102,22 +132,6 @@ const SignUp: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCode('');
-  };
-
-  const handleAuthCode = async () => {
-    if (!code.trim()) {
-      alert('인증번호를 입력해주세요.');
-      return;
-    }
-    try {
-      const data = await sendEmailAuthCode(code);
-      if (data.success) alert(data.message);
-      // setIsEmailVerified(true); // 인증 성공 상태로 변경
-      handleCloseModal();
-    } catch (error: any) {
-      alert(error.message);
-      console.error(error);
-    }
   };
 
   return (
@@ -229,22 +243,30 @@ const SignUp: React.FC = () => {
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                   <h3 className="modal-title">인증번호 입력</h3>
                   <input
-                    type="tel"
+                    type="text"
+                    name="code"
                     value={formData.code}
                     className="modal-input"
                     placeholder="이메일로 전달받은 인증번호를 입력해주세요."
-                    onChange={(e) => setCode(e.target.value)}
+                    onChange={handleChange}
                   />
                   <div className="modal-actions">
-                    <button className="modal-button secondary" onClick={handleCloseModal}>
+                    <button
+                      type="button"
+                      className="modal-button secondary"
+                      onClick={handleCloseModal}
+                    >
                       취소
                     </button>
-                    <button className="modal-button primary" onClick={handleAuthCode}>
+                    <button
+                      type="button"
+                      className="modal-button primary"
+                      onClick={() => handleAuthCode(formData.code)}
+                    >
                       인증
                     </button>
                   </div>
                 </div>
-                {errors.code && <p className="signup-error">{errors.code}</p>}
               </div>
             )}
 
