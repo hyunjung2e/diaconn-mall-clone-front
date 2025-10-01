@@ -24,19 +24,33 @@ export const checkEmailDuplicate = async (email: string) => {
 };
 
 // 이메일 인증번호 발송
-export const sendEmailAuthCode = async (code: string) => {
-  const response = await fetch(`${API_BASE_URL}/user/email-authcode`, {
+export const sendEmailAuthCode = async (email: string) => {
+  const cleanEmail = email.trim();
+  const response = await fetch(`${API_BASE_URL}/user/auth-email/request`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(code),
+    body: JSON.stringify({ email: cleanEmail }),
   });
 
   const data = await response.json();
-
   if (!response.ok) {
     throw new Error(data.message || '인증번호 발송 실패');
   }
+  return data;
+};
 
+// 이메일 인증번호 검증
+export const verifyEmailAuthCode = async (email: string, code: string) => {
+  const response = await fetch(`${API_BASE_URL}/user/auth-email/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, code }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || '인증번호 검증 실패');
+  }
   return data;
 };
 
