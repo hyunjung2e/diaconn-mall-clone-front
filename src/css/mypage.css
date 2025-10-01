@@ -3,41 +3,82 @@
   justify-content: center;
   align-items: center;
 }
-
+body {
+  overflow-y: hidden; 
+}
 .inner-container {
-  border: 1px solid #5a5a5a;
+  border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
   width: 550px;
-  border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px 0 20px 0;
+  padding: 20px 0;
 }
 
-.logo {
-  display: block;
-  width: 200px;
-  margin-top: 50px;
-  margin-bottom: 20px;
+.mypage-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 40px auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
-.submit-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 30px;
-  background-color: #00796b;
-  color: white;
+.mypage-sidebar {
+  width: 220px;
+  background-color: #f9f9f9;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.tab {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background-color: transparent;
   border: none;
-  border-radius: 4px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
   cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-/* 마이페이지 */
+.tab:hover {
+  background-color: #e6f0ff;
+  color: #0066cc;
+}
+
+.tab.active {
+  background-color: #0066cc;
+  color: white;
+  font-weight: bold;
+}
+
+.mypage-content {
+  flex: 1;
+  padding: 30px 40px;
+  background-color: #fff;
+}
+
+.mypage-welcome h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.mypage-welcome p {
+  font-size: 16px;
+  color: #666;
+}
+
 .mypage-title {
   font-size: 20px;
   font-weight: bold;
@@ -47,10 +88,11 @@
 .mypage-row {
   display: flex;
   flex-direction: column;
+  margin-bottom: 15px;
 }
 
 .mypage-disabled-input {
-  width: 450px;
+  width: 100%;
   padding: 8px;
   margin-top: 4px;
   border: 1px solid #ccc;
@@ -59,7 +101,7 @@
 }
 
 .mypage-input {
-  width: 450px;
+  width: 100%;
   padding: 8px;
   margin-top: 4px;
   border: 1px solid #ccc;
@@ -69,9 +111,34 @@
 .mypage-errors {
   color: red;
   font-size: 12px;
+  margin-top: 4px;
 }
 
 .mypage-label {
   font-size: 14px;
   font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0066cc;
+}
+
+.logo {
+  display: block;
+  width: 200px;
+  margin-top: 50px;
+  margin-bottom: 20px;
 }
