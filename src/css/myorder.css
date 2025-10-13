@@ -12,7 +12,7 @@ body { background:#f8f8f8; color:#1f2a37; }
   font-weight:bold;
   text-align:center;
   margin:20px 0;
-  color:#2563eb;
+  color:#00796b;
 }
 
 .myorder table{
@@ -24,7 +24,7 @@ body { background:#f8f8f8; color:#1f2a37; }
   font-size:15px;
 }
 .myorder thead th{
-  background:#2563eb;
+  background:#00796b;
   color:#fff;
   padding:12px 10px;
   border:none;
@@ -70,7 +70,7 @@ body { background:#f8f8f8; color:#1f2a37; }
 .page-btn:hover,
 .page-num:hover{
   background-color: #c7e3ff;
-  color: rgb(53, 137, 255);
+  color: #00796b;
 }
 
 .page-num.dots{

@@ -3,16 +3,14 @@
   justify-content: center;
   align-items: center;
 }
-body {
-  overflow-y: hidden; 
-}
+
 .inner-container {
   border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
   width: 550px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -54,11 +52,11 @@ body {
 
 .tab:hover {
   background-color: #e6f0ff;
-  color: #0066cc;
+  color: #00796b;
 }
 
 .tab.active {
-  background-color: #0066cc;
+  background-color: #00796b;
   color: white;
   font-weight: bold;
 }
@@ -68,7 +66,9 @@ body {
   padding: 30px 40px;
   background-color: #fff;
 }
-
+.mypage-content > form > div > input{
+padding: 20px;
+}
 .mypage-welcome h2 {
   font-size: 24px;
   margin-bottom: 10px;
@@ -88,24 +88,25 @@ body {
 .mypage-row {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
 }
 
 .mypage-disabled-input {
   width: 100%;
   padding: 8px;
   margin-top: 4px;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: lightgrey;
+  background-color: rgb(239, 239, 239);
+  outline:none;
+  color: #969696;
 }
 
 .mypage-input {
   width: 100%;
   padding: 8px;
   margin-top: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid #c5c5c5;
   border-radius: 4px;
+  outline: none;
 }
 
 .mypage-errors {
@@ -122,10 +123,10 @@ body {
 
 .submit-button {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
+  padding: 20px;
+  margin-top: 30px;
   margin-bottom: 30px;
-  background-color: #0066cc;
+  background-color: #00796b;
   color: white;
   border: none;
   border-radius: 4px;
@@ -133,7 +134,7 @@ body {
 }
 
 .submit-button:hover {
-  background-color: #0066cc;
+  background-color: #00796b;
 }
 
 .logo {
