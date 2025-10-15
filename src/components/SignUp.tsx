@@ -31,6 +31,8 @@ const SignUp: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [code, setCode] = useState('');
   const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 상태
+  const [timer, setTimer] = useState<number>(0); // 인증번호 유효시간(초)
+  const TIMER_DURATION = 180; // 유효시간(초)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -127,11 +129,44 @@ const SignUp: React.FC = () => {
 
   // 인증번호 입력
   const handleOpenModal = () => {
+    setTimer(TIMER_DURATION); // 모달 표시 직전, 게이지를 가득 찬 상태로 설정
     setIsModalOpen(true);
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCode('');
+    setTimer(0);
+  };
+
+  // 모달 열리면 유효시간 카운트 시작
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    // 1초마다 실행할 일을 intervalId 함수에 예약
+    const intervalId = window.setInterval(() => {
+      setTimer((prev) => {
+        // 남은시간 1초 이하일 경우
+        if (prev <= 1) {
+          window.clearInterval(intervalId);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // 클린업 함수: unmount 되거나 isModalOpen 상태 변경 시 실행
+    // 즉, 모달 닫힐 때(isModalOpen == false) 타이머도 정리
+    return () => window.clearInterval(intervalId);
+  }, [isModalOpen]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const secs = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, '0');
+    return `${minutes}:${secs}`;
   };
 
   return (
@@ -250,6 +285,22 @@ const SignUp: React.FC = () => {
                     placeholder="이메일로 전달받은 인증번호를 입력해주세요."
                     onChange={handleChange}
                   />
+                  <p className="modal-timer">유효시간: {formatTime(timer)}</p>
+                  <div
+                    className="modal-progress"
+                    role="progressbar"
+                    aria-label="남은 시간 진행 상태"
+                    aria-valuemin={0}
+                    aria-valuemax={TIMER_DURATION}
+                    aria-valuenow={timer}
+                  >
+                    <div
+                      className="modal-progress-bar"
+                      style={{
+                        width: `${Math.max(0, Math.min(100, (timer / TIMER_DURATION) * 100))}%`,
+                      }}
+                    />
+                  </div>
                   <div className="modal-actions">
                     <button
                       type="button"

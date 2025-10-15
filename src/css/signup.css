@@ -1,3 +1,25 @@
+.modal-progress {
+  width: 55%;
+  height: 6px;
+  background-color: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+  margin-bottom: 12px; /* 하단 버튼과의 간격 */
+}
+
+.modal-progress-bar {
+  height: 100%;
+  background-color: #1ccfcf; /* 이메일 인증 관련 버튼 색상과 통일 */
+  transition: width 1s linear;
+}
+
+.modal-timer {
+  color: #1ccfcf;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
 /* 전체 컨테이너 */
 .signup-box {
   width: 450px;
