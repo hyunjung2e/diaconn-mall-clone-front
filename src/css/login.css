@@ -181,6 +181,31 @@
   color: #fff;
 }
 
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200; /* 모달보다 위 */
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid rgba(31, 196, 190, 0.3);
+  border-top-color: #1fc4be;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* 마이페이지 */
 .mypage-title {
   font-size: 20px;

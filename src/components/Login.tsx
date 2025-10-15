@@ -17,6 +17,7 @@ const Login: React.FC = () => {
   const [isPwForgotModalOpen, setIsPwForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotPhone, setForgotPhone] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     getLoggedInUser()
@@ -55,6 +56,7 @@ const Login: React.FC = () => {
     setIsPwForgotModalOpen(true);
   };
   const handleClosePwForgot = () => {
+    if (isSending) return;
     setIsPwForgotModalOpen(false);
     setForgotEmail('');
     setForgotPhone('');
@@ -65,6 +67,7 @@ const Login: React.FC = () => {
       return;
     }
     try {
+      setIsSending(true);
       const data = await forgotPassword({ email: forgotEmail, phone: forgotPhone });
       if (data.success) {
         alert(data.message || '임시 비밀번호가 전송되었습니다. 이메일을 확인해주세요.');
@@ -73,6 +76,8 @@ const Login: React.FC = () => {
     } catch (error: any) {
       alert(error.message);
       console.error(error);
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -147,6 +152,7 @@ const Login: React.FC = () => {
               placeholder="이메일을 입력해주세요."
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
+              disabled={isSending}
             />
             <input
               type="tel"
@@ -154,16 +160,30 @@ const Login: React.FC = () => {
               placeholder="휴대폰 번호를 입력해주세요."
               value={forgotPhone}
               onChange={(e) => setForgotPhone(e.target.value)}
+              disabled={isSending}
             />
             <div className="modal-actions">
-              <button className="modal-button secondary" onClick={handleClosePwForgot}>
+              <button
+                className="modal-button secondary"
+                onClick={handleClosePwForgot}
+                disabled={isSending}
+              >
                 취소
               </button>
-              <button className="modal-button primary" onClick={handleSendTempPwPassword}>
-                전송
+              <button
+                className="modal-button primary"
+                onClick={handleSendTempPwPassword}
+                disabled={isSending}
+              >
+                {isSending ? '전송 중...' : '전송'}
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {isSending && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
         </div>
       )}
     </>
