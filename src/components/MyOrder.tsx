@@ -1,38 +1,42 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/myorder.css';
 import '../css/filterwidget.css';
-
-export interface Order {
-  orderId: string;
-  date: string;
-  productName: string;
-  quantity: number;
-  price: number;
-  total: number;
-  status: string;
-}
+import { OrderSummary, formatDate, formatPrice, formatProductCount } from '../types/Types.ts';
+import { getOrderList } from '../api/Api.ts';
 
 interface Props {
-  orders?: Order[];
   itemsPerPage?: number;
-  onRowClick?: (orderId: string) => void;
+  onOrderClick?: (orderId: number) => void;
 }
 
 export default function MyOrder({
-  orders: ordersProp,
   itemsPerPage = 5,
-  onRowClick,
+  onOrderClick,
 }: Props) {
-  const demoOrders: Order[] = useMemo(
-    () => [
-      { orderId: 'ORD12345', date: '2025-03-25', productName: '상품1', quantity: 2, price: 5000, total: 10000, status: '배송중' },
-      { orderId: 'ORD12346', date: '2025-03-26', productName: '상품2', quantity: 1, price: 15000, total: 15000, status: '배송완료' },
-      { orderId: 'ORD12347', date: '2025-03-27', productName: '상품3', quantity: 3, price: 2000, total: 6000, status: '배송중' },
-    ],
-    []
-  );
+  const [orders, setOrders] = useState<OrderSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const orders = ordersProp ?? demoOrders;
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getOrderList();
+        setOrders(data);
+      } catch (err: any) {
+        if (err.message === 'UNAUTHORIZED') {
+          setError('로그인이 필요합니다.');
+        } else {
+          setError('주문 목록을 불러오는데 실패했습니다.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(orders.length / itemsPerPage));
@@ -53,13 +57,36 @@ export default function MyOrder({
   }
   const pageItems = getPageRange(currentPage, totalPages);
 
+  if (loading) {
+    return (
+      <div className="myorder">
+        <div className="order-loading">주문 목록을 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="myorder">
+        <div className="order-error">{error}</div>
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="myorder">
+        <div className="order-empty">주문 내역이 없습니다.</div>
+      </div>
+    );
+  }
+
   return (
     <div className="myorder">
-
       <table>
         <thead>
           <tr>
-            {['주문 ID','주문 날짜','상품명','수량','단가 (원)','총액 (원)','처리상태'].map((th) => (
+            {['주문번호', '주문날짜', '상품명', '배송지', '총 결제금액'].map((th) => (
               <th key={th}>{th}</th>
             ))}
           </tr>
@@ -67,17 +94,24 @@ export default function MyOrder({
         <tbody>
           {paginatedOrders.map((order) => (
             <tr
-              key={order.orderId}
-              onClick={() => onRowClick?.(order.orderId)}
-              style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+              key={order.id}
+              onClick={() => onOrderClick?.(order.id)}
+              style={{ cursor: onOrderClick ? 'pointer' : 'default' }}
             >
-              <td className="td">{order.orderId}</td>
-              <td className="td">{order.date}</td>
-              <td className="td align-left">{order.productName}</td>
-              <td className="td">{order.quantity}</td>
-              <td className="td">{order.price.toLocaleString()}</td>
-              <td className="td strong">{order.total.toLocaleString()}</td>
-              <td className="td">{order.status}</td>
+              <td className="td">{order.id}</td>
+              <td className="td">{formatDate(order.regDate)}</td>
+              <td className="td align-left">
+                <div className="order-product-info">
+                  <img
+                    src={order.firstProductImgUrl}
+                    alt={order.firstProductName}
+                    className="order-product-thumb"
+                  />
+                  <span>{formatProductCount(order.firstProductName, order.totalProductCount)}</span>
+                </div>
+              </td>
+              <td className="td">{order.address}</td>
+              <td className="td strong">{formatPrice(order.totalPrice)}</td>
             </tr>
           ))}
         </tbody>

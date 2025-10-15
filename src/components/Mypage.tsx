@@ -11,6 +11,7 @@ import {
 } from '../api/Api.ts';
 
 const MyOrder = React.lazy(() => import('./MyOrder.tsx'));
+const OrderDetailModal = React.lazy(() => import('./OrderDetailModal.tsx'));
 
 export default function Mypage() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ export default function Mypage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [selectedTab, setSelectedTab] = useState<'home' | 'edit' | 'orders'>('home');
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -108,6 +111,16 @@ export default function Mypage() {
   const handleCategory = (categoryId: string) => {
     setCategoryId(categoryId);
     navigate(`/${categoryId}`);
+  };
+
+  const handleOrderClick = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrderId(null);
   };
 
   return (
@@ -250,14 +263,17 @@ export default function Mypage() {
 
           {selectedTab === 'orders' && (
             <Suspense fallback={<div style={{ padding: 20 }}>주문내역 불러오는 중…</div>}>
-              <MyOrder
-                // API 연동 시: orders={fetchedOrders}
-                onRowClick={(orderId: string) => navigate(`/order/${orderId}`)}
-              />
+              <MyOrder onOrderClick={handleOrderClick} />
             </Suspense>
           )}
         </div>
       </div>
+
+      {isModalOpen && selectedOrderId && (
+        <Suspense fallback={null}>
+          <OrderDetailModal orderId={selectedOrderId} onClose={handleCloseModal} />
+        </Suspense>
+      )}
     </>
   );
 }

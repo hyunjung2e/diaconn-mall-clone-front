@@ -206,10 +206,11 @@ const Order: React.FC = () => {
             name: formData.recipientName,
             memo: message,
             orderDetails: orderItems.map((item) => ({
-              orderItemId: item.id,
-              orderItemPrice: item.price,
-              orderItemQuantity: item.quantity,
-              orderItemTotalPrice: item.price * item.quantity,
+              productId: item.id,
+              productName: item.nm,
+              productPrice: item.price,
+              productQuantity: item.quantity,
+              productImgUrl: item.imgUrl,
             })),
           };
           await order(updateData);

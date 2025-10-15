@@ -260,3 +260,47 @@ export const updateCartItem = async (userId: number, itemId: number, quantity: n
   });
   return response.json();
 };
+
+// ***** 마이페이지 주문 관련 *****
+
+// 주문 목록 조회
+export const getOrderList = async () => {
+  const response = await fetch(`${API_BASE_URL}/mypage/orders`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (response.status === 401) {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  if (!response.ok) {
+    throw new Error('주문 목록 조회에 실패했습니다.');
+  }
+
+  return response.json();
+};
+
+// 주문 상세 조회
+export const getOrderDetail = async (orderId: number) => {
+  const response = await fetch(`${API_BASE_URL}/mypage/orders/${orderId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (response.status === 401) {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  if (response.status === 404) {
+    throw new Error('NOT_FOUND');
+  }
+
+  if (!response.ok) {
+    throw new Error('주문 상세 조회에 실패했습니다.');
+  }
+
+  return response.json();
+};

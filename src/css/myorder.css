@@ -79,3 +79,32 @@ body { background:#f8f8f8; color:#1f2a37; }
   background:transparent;
   transform:none;
 }
+
+/* 주문 상품 정보 */
+.order-product-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.order-product-thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  background-color: #e5e7eb;
+}
+
+/* 로딩, 에러, 빈 상태 */
+.order-loading,
+.order-error,
+.order-empty {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.order-error {
+  color: #ef4444;
+}
