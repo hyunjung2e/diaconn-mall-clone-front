@@ -17,6 +17,7 @@ const Main = () => {
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
   useEffect(() => {
     if (categoryId) {
@@ -38,6 +39,17 @@ const Main = () => {
       })
       .catch(() => setUser(null));
   }, [categoryId]);
+
+  // 배너 롤링
+  useEffect(() => {
+    if (banners.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prevIndex) => (prevIndex === banners.length - 1 ? 0 : prevIndex + 1));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [banners.length]);
 
   const handleSearch = () => {
     const trimmed = searchQuery.trim();
@@ -68,15 +80,15 @@ const Main = () => {
 
       <main>
         <div className="container">
-          {banners.map((banner) => (
+          {banners.length > 0 && (
             <img
-              key={banner.id}
-              src={banner.imgUrl}
-              alt={banner.altText}
+              key={banners[currentBannerIndex]?.id}
+              src={banners[currentBannerIndex]?.imgUrl}
+              alt={banners[currentBannerIndex]?.altText}
               loading="lazy"
               style={{ width: '100%', objectFit: 'cover' }}
             />
-          ))}
+          )}
         </div>
       </main>
 
