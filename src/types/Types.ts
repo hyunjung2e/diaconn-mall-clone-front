@@ -45,6 +45,7 @@ export interface OrderSummary {
   firstProductImgUrl: string;
   totalProductCount: number;
   addressDetail?: string;
+  status?: string; // 주문 상태 (예: 결제완료, 배송준비중, 배송중, 배송완료 등)
 }
 
 export interface OrderDetailItem {
@@ -78,4 +79,10 @@ export const formatPrice = (n: number) => `${n.toLocaleString()}원`;
 
 export const formatProductCount = (first: string, total: number) =>
   total <= 1 ? first : `${first} 외 ${total - 1}건`;
+
+// 날짜를 연월로 그룹핑하기 위한 포맷 함수 (예: "2025년 10월")
+export const formatYearMonth = (iso: string) => {
+  const date = new Date(iso);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+};
 

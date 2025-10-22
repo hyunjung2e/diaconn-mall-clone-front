@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import '../css/mypage.css';
-import { LoginUser, Product } from '../types/Types.ts';
+import { LoginUser, Product, OrderSummary, formatDate, formatPrice, formatProductCount, formatYearMonth } from '../types/Types.ts';
 import Header from './Common.tsx';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -8,6 +8,8 @@ import {
   fetchProductsInfo,
   fetchCategoryProducts,
   updateUser,
+  getOrderList,
+  getCartItems,
 } from '../api/Api.ts';
 
 const MyOrder = React.lazy(() => import('./MyOrder.tsx'));
@@ -24,6 +26,12 @@ export default function Mypage() {
   const [selectedTab, setSelectedTab] = useState<'home' | 'edit' | 'orders'>('home');
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [orders, setOrders] = useState<OrderSummary[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 5;
 
   const [formData, setFormData] = useState({
     email: '',
@@ -47,9 +55,24 @@ export default function Mypage() {
 
     getLoggedInUser()
       .then((data) => {
-        if (data) setUser(data);
+        if (data) {
+          setUser(data);
+          // 로그인된 사용자의 장바구니 조회
+          setCartLoading(true);
+          getCartItems(data.id)
+            .then((items) => setCartItems(items))
+            .catch((err) => console.error('장바구니 조회 실패:', err))
+            .finally(() => setCartLoading(false));
+        }
       })
       .catch(() => setUser(null));
+
+    // 주문 목록 조회
+    setOrdersLoading(true);
+    getOrderList()
+      .then((data) => setOrders(data))
+      .catch((err) => console.error('주문 목록 조회 실패:', err))
+      .finally(() => setOrdersLoading(false));
   }, [categoryId]);
 
   useEffect(() => {
@@ -165,8 +188,103 @@ export default function Mypage() {
           {selectedTab === 'home' && user && (
             <div className="mypage-welcome">
               <h2>안녕하세요, {user.name}님! 반갑습니다!</h2>
-              <p>진행중인 주문</p>
-              <p>최근 주문 정보</p>
+
+              {ordersLoading ? (
+                <p>주문 정보를 불러오는 중...</p>
+              ) : (
+                <>
+                  <section className="mypage-home-section">
+                    <h3>최근 주문 정보</h3>
+                    {orders.length === 0 ? (
+                      <p className="no-orders">최근 주문 정보가 없습니다.</p>
+                    ) : (() => {
+                      // 가장 최근 달의 주문만 필터링
+                      if (orders.length === 0) return null;
+
+                      const mostRecentYearMonth = formatYearMonth(orders[0].regDate);
+                      const recentMonthOrders = orders.filter(
+                        (order) => formatYearMonth(order.regDate) === mostRecentYearMonth
+                      );
+
+                      // 페이지네이션 계산
+                      const totalPages = Math.ceil(recentMonthOrders.length / ordersPerPage);
+                      const startIndex = (currentPage - 1) * ordersPerPage;
+                      const endIndex = startIndex + ordersPerPage;
+                      const currentOrders = recentMonthOrders.slice(startIndex, endIndex);
+
+                      return (
+                        <div className="recent-orders-grouped">
+                          <div className="order-month-group">
+                            <h4 className="order-month-title">{mostRecentYearMonth}</h4>
+                            <div className="recent-orders-list">
+                              {currentOrders.map((order) => (
+                                <div
+                                  key={order.id}
+                                  className="recent-order-item"
+                                  onClick={() => handleOrderClick(order.id)}
+                                >
+                                  <img
+                                    src={order.firstProductImgUrl}
+                                    alt={order.firstProductName}
+                                    className="recent-order-img"
+                                  />
+                                  <div className="recent-order-info">
+                                    <p className="recent-order-product">
+                                      {formatProductCount(order.firstProductName, order.totalProductCount)}
+                                    </p>
+                                    <p className="recent-order-date">{formatDate(order.regDate)}</p>
+                                  </div>
+                                  <p className="recent-order-price">{formatPrice(order.totalPrice)}</p>
+                                </div>
+                              ))}
+                            </div>
+                            {totalPages > 1 && (
+                              <div className="pagination">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                  <button
+                                    key={page}
+                                    className={currentPage === page ? 'page-btn active' : 'page-btn'}
+                                    onClick={() => setCurrentPage(page)}
+                                  >
+                                    {page}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </section>
+
+                  <section className="mypage-home-section">
+                    <h3>최근 본 상품</h3>
+                    {productInfo.length === 0 ? (
+                      <p className="no-items">최근 본 상품이 없습니다.</p>
+                    ) : (
+                      <div className="horizontal-scroll-container">
+                        {productInfo.slice(0, 4).map((product) => (
+                          <div
+                            key={product.id}
+                            className="recent-product-card"
+                            onClick={() => navigate(`/productDetail/${product.id}`)}
+                          >
+                            <img
+                              src={product.imgUrl}
+                              alt={product.altText}
+                              className="recent-product-img"
+                            />
+                            <div className="recent-product-info">
+                              <p className="recent-product-name">{product.nm}</p>
+                              <p className="recent-product-price">{formatPrice(product.price)}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                </>
+              )}
             </div>
           )}
 

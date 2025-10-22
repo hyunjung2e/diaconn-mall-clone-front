@@ -37,7 +37,7 @@ const OrderDone: React.FC = () => {
   };
 
   const handleOrderList = () => {
-    navigate('/myorder');
+    navigate('/mypage');
   };
 
   return (
