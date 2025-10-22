@@ -98,7 +98,7 @@ export const updateUser = async (userData: any) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || '회원 정보 수정 실패');
+    throw new Error(errorData.message || `회원 정보 수정 실패 (${response.status})`);
   }
   return response.json();
 };

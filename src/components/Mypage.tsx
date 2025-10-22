@@ -1,6 +1,14 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import '../css/mypage.css';
-import { LoginUser, Product, OrderSummary, formatDate, formatPrice, formatProductCount, formatYearMonth } from '../types/Types.ts';
+import {
+  LoginUser,
+  Product,
+  OrderSummary,
+  formatDate,
+  formatPrice,
+  formatProductCount,
+  formatYearMonth,
+} from '../types/Types.ts';
 import Header from './Common.tsx';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -99,6 +107,8 @@ export default function Mypage() {
     if (!formData.password2) newErrors.password2 = '비밀번호 확인을 입력하세요';
     if (formData.password !== formData.password2)
       newErrors.password2 = '비밀번호가 일치하지 않습니다.';
+    if (!formData.address) newErrors.address = '주소를 입력하세요.';
+    if (!formData.addressDetail) newErrors.addressDetail = '상세주소를 입력하세요.';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -112,14 +122,15 @@ export default function Mypage() {
           email: user!.email,
           phone: formData.phone,
           password: formData.password,
-          address: formData.address,
-          addressDetail: formData.addressDetail,
+          address: formData.address.trim(),
+          addressDetail: formData.addressDetail.trim(),
         };
         await updateUser(updateData);
         const updatedUser = await getLoggedInUser();
         setUser(updatedUser);
         alert('회원정보가 성공적으로 수정되었습니다!');
       } catch (error) {
+        console.error('회원정보 수정 오류:', error);
         alert('회원정보 수정중 오류가 발생했습니다.');
       }
     }
@@ -197,64 +208,77 @@ export default function Mypage() {
                     <h3>최근 주문 정보</h3>
                     {orders.length === 0 ? (
                       <p className="no-orders">최근 주문 정보가 없습니다.</p>
-                    ) : (() => {
-                      // 가장 최근 달의 주문만 필터링
-                      if (orders.length === 0) return null;
+                    ) : (
+                      (() => {
+                        // 가장 최근 달의 주문만 필터링
+                        if (orders.length === 0) return null;
 
-                      const mostRecentYearMonth = formatYearMonth(orders[0].regDate);
-                      const recentMonthOrders = orders.filter(
-                        (order) => formatYearMonth(order.regDate) === mostRecentYearMonth
-                      );
+                        const mostRecentYearMonth = formatYearMonth(orders[0].regDate);
+                        const recentMonthOrders = orders.filter(
+                          (order) => formatYearMonth(order.regDate) === mostRecentYearMonth
+                        );
 
-                      // 페이지네이션 계산
-                      const totalPages = Math.ceil(recentMonthOrders.length / ordersPerPage);
-                      const startIndex = (currentPage - 1) * ordersPerPage;
-                      const endIndex = startIndex + ordersPerPage;
-                      const currentOrders = recentMonthOrders.slice(startIndex, endIndex);
+                        // 페이지네이션 계산
+                        const totalPages = Math.ceil(recentMonthOrders.length / ordersPerPage);
+                        const startIndex = (currentPage - 1) * ordersPerPage;
+                        const endIndex = startIndex + ordersPerPage;
+                        const currentOrders = recentMonthOrders.slice(startIndex, endIndex);
 
-                      return (
-                        <div className="recent-orders-grouped">
-                          <div className="order-month-group">
-                            <h4 className="order-month-title">{mostRecentYearMonth}</h4>
-                            <div className="recent-orders-list">
-                              {currentOrders.map((order) => (
-                                <div
-                                  key={order.id}
-                                  className="recent-order-item"
-                                  onClick={() => handleOrderClick(order.id)}
-                                >
-                                  <img
-                                    src={order.firstProductImgUrl}
-                                    alt={order.firstProductName}
-                                    className="recent-order-img"
-                                  />
-                                  <div className="recent-order-info">
-                                    <p className="recent-order-product">
-                                      {formatProductCount(order.firstProductName, order.totalProductCount)}
-                                    </p>
-                                    <p className="recent-order-date">{formatDate(order.regDate)}</p>
-                                  </div>
-                                  <p className="recent-order-price">{formatPrice(order.totalPrice)}</p>
-                                </div>
-                              ))}
-                            </div>
-                            {totalPages > 1 && (
-                              <div className="pagination">
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                  <button
-                                    key={page}
-                                    className={currentPage === page ? 'page-btn active' : 'page-btn'}
-                                    onClick={() => setCurrentPage(page)}
+                        return (
+                          <div className="recent-orders-grouped">
+                            <div className="order-month-group">
+                              <h4 className="order-month-title">{mostRecentYearMonth}</h4>
+                              <div className="recent-orders-list">
+                                {currentOrders.map((order) => (
+                                  <div
+                                    key={order.id}
+                                    className="recent-order-item"
+                                    onClick={() => handleOrderClick(order.id)}
                                   >
-                                    {page}
-                                  </button>
+                                    <img
+                                      src={order.firstProductImgUrl}
+                                      alt={order.firstProductName}
+                                      className="recent-order-img"
+                                    />
+                                    <div className="recent-order-info">
+                                      <p className="recent-order-product">
+                                        {formatProductCount(
+                                          order.firstProductName,
+                                          order.totalProductCount
+                                        )}
+                                      </p>
+                                      <p className="recent-order-date">
+                                        {formatDate(order.regDate)}
+                                      </p>
+                                    </div>
+                                    <p className="recent-order-price">
+                                      {formatPrice(order.totalPrice)}
+                                    </p>
+                                  </div>
                                 ))}
                               </div>
-                            )}
+                              {totalPages > 1 && (
+                                <div className="pagination">
+                                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                                    (page) => (
+                                      <button
+                                        key={page}
+                                        className={
+                                          currentPage === page ? 'page-btn active' : 'page-btn'
+                                        }
+                                        onClick={() => setCurrentPage(page)}
+                                      >
+                                        {page}
+                                      </button>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })()}
+                        );
+                      })()
+                    )}
                   </section>
 
                   <section className="mypage-home-section">
@@ -295,20 +319,12 @@ export default function Mypage() {
             >
               <div className="mypage-row">
                 <label className="mypage-label">이름</label>
-                <input
-                  className="mypage-disabled-input"
-                  value={user?.name || ''}
-                  readOnly
-                />
+                <input className="mypage-disabled-input" value={user?.name || ''} readOnly />
               </div>
 
               <div>
                 <label className="mypage-label">이메일</label>
-                <input
-                  className="mypage-disabled-input"
-                  value={user?.email || ''}
-                  readOnly
-                />
+                <input className="mypage-disabled-input" value={user?.email || ''} readOnly />
               </div>
 
               <div className="mypage-row">
@@ -360,6 +376,7 @@ export default function Mypage() {
                   value={formData.address}
                   onChange={handleChange}
                 />
+                {errors.address && <p className="mypage-errors">{errors.address}</p>}
               </div>
 
               <div className="mypage-row">
@@ -371,6 +388,7 @@ export default function Mypage() {
                   value={formData.addressDetail}
                   onChange={handleChange}
                 />
+                {errors.addressDetail && <p className="mypage-errors">{errors.addressDetail}</p>}
               </div>
 
               <button className="submit-button" type="submit">
