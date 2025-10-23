@@ -1,5 +1,5 @@
 import '../css/main.css';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getBanners,
@@ -79,15 +79,20 @@ const Main = () => {
       </nav>
 
       <main>
-        <div className="container">
+        <div className="banner-container">
           {banners.length > 0 && (
-            <img
-              key={banners[currentBannerIndex]?.id}
-              src={banners[currentBannerIndex]?.imgUrl}
-              alt={banners[currentBannerIndex]?.altText}
-              loading="lazy"
-              style={{ width: '100%', objectFit: 'cover' }}
-            />
+            <div
+              className="banner-slider"
+              style={{
+                transform: `translateX(-${currentBannerIndex * 100}%)`,
+              }}
+            >
+              {banners.map((banner, index) => (
+                <div key={banner.id} className="banner-slide">
+                  <img src={banner.imgUrl} alt={banner.altText} loading="lazy" />
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </main>
