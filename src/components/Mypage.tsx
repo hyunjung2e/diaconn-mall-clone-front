@@ -27,6 +27,7 @@ export default function Mypage() {
   const navigate = useNavigate();
 
   const [productInfo, setProductInfo] = useState<Product[]>([]);
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,6 +61,10 @@ export default function Mypage() {
         .then(setProductInfo)
         .catch((err) => console.error(err));
     }
+
+    // 로컬 스토리지에서 최근 본 상품 불러오기
+    const storedRecentProducts = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+    setRecentProducts(storedRecentProducts);
 
     getLoggedInUser()
       .then((data) => {
@@ -283,11 +288,11 @@ export default function Mypage() {
 
                   <section className="mypage-home-section">
                     <h3>최근 본 상품</h3>
-                    {productInfo.length === 0 ? (
+                    {recentProducts.length === 0 ? (
                       <p className="no-items">최근 본 상품이 없습니다.</p>
                     ) : (
                       <div className="horizontal-scroll-container">
-                        {productInfo.slice(0, 4).map((product) => (
+                        {recentProducts.slice(0, 4).map((product) => (
                           <div
                             key={product.id}
                             className="recent-product-card"

@@ -39,6 +39,21 @@ const ProductDetail: React.FC = () => {
           imgUrl: data.imgUrl,
            count: count
         });
+
+        // 최근 본 상품에 추가
+        const recentProducts = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+
+        // 중복 제거 (같은 ID의 상품이 있으면 제거)
+        const filteredProducts = recentProducts.filter((p: Product) => p.id !== data.id);
+
+        // 현재 상품을 맨 앞에 추가
+        const updatedProducts = [data, ...filteredProducts];
+
+        // 최대 5개까지만 저장
+        const limitedProducts = updatedProducts.slice(0, 5);
+
+        // 로컬 스토리지에 저장
+        localStorage.setItem('recentlyViewedProducts', JSON.stringify(limitedProducts));
       })
       .catch((err: any) => setError(err.message || '상품 정보를 불러오는 데 실패했습니다.'))
       .finally(() => setLoading(false));
