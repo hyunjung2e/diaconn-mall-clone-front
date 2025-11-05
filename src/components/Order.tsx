@@ -43,8 +43,6 @@ const Order: React.FC = () => {
 
     // 두 배열 합치기
     const mergedItems = [...itemsFromCart, ...itemsFromBuyNow];
-
-    // ✅ 여기서 합친 배열을 state에 세팅해야 함
     setOrderItems(mergedItems);
 
     setLoading(false);
@@ -88,8 +86,12 @@ const Order: React.FC = () => {
   // ***** 주문하기 *****
   // 체크박스 클릭 이벤트
   const handleCheckbox = (checked: boolean, orderItem: CartItem) => {
+    const quantity = Number(orderItem.quantity) || 1;
+    const price = Number(orderItem.price) || 0;
+    const updatedItem = { ...orderItem, totalPrice: price * quantity };
+
     setSelectedPrices((prev) =>
-      checked ? [...prev, orderItem] : prev.filter((p) => p.id !== orderItem.id)
+      checked ? [...prev, updatedItem] : prev.filter((p) => p.id !== orderItem.id)
     );
   };
 
