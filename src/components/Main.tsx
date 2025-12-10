@@ -1,5 +1,5 @@
 import '../css/main.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getBanners,
@@ -8,11 +8,11 @@ import {
   fetchCategoryProducts,
 } from '../api/Api.ts';
 import Header from './Common.tsx';
-import { LoginUser, Product } from '../types/Types.ts';
+import { LoginUser, Product, Banner } from '../types/Types.ts';
 
 const Main = () => {
   const navigate = useNavigate();
-  const [banners, setBanners] = useState<Product[]>([]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [productInfo, setProductInfo] = useState<Product[]>([]);
   const [user, setUser] = useState<LoginUser | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -89,7 +89,7 @@ const Main = () => {
             >
               {banners.map((banner, index) => (
                 <div key={banner.id} className="banner-slide">
-                  <img src={banner.imgUrl} alt={banner.altText} loading="lazy" />
+                  <img src={banner.imageUrl} alt="배너" loading="lazy" />
                 </div>
               ))}
             </div>

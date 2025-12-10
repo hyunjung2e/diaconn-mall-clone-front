@@ -22,13 +22,23 @@ export interface Product {
   quantity: number;
 }
 
+export interface Banner {
+  id: number;
+  nm: string;
+  imageUrl: string;
+  linkUrl: string;
+  isActive: string;
+  startDate: string;
+  endDate: string;
+}
+
 export type CartItem = {
   id: number;
   nm: string;
   description: string;
   price: number;
   quantity: number;
-   count: number; // 서버에서 받은 원본 수량
+  count: number; // 서버에서 받은 원본 수량
   selected?: boolean; // 사용자가 UI에서 조작하는 현재 수량
   imgUrl?: string;
   totalPrice: number;
@@ -85,4 +95,3 @@ export const formatYearMonth = (iso: string) => {
   const date = new Date(iso);
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
 };
-

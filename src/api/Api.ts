@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL + '/api';
 
 // 회원가입
 export const register = async (userData: any) => {
-  const response = await fetch(`${API_BASE_URL}/user/register`, {
+  const response = await fetch(`${API_BASE_URL}/v1/user/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
@@ -18,7 +18,7 @@ export const register = async (userData: any) => {
 // 이메일 중복 체크
 export const checkEmailDuplicate = async (email: string) => {
   const response = await fetch(
-    `${API_BASE_URL}/user/checkemail?email=${encodeURIComponent(email)}`
+    `${API_BASE_URL}/v1/user/checkemail?email=${encodeURIComponent(email)}`
   );
   return await response.json();
 };
@@ -26,7 +26,7 @@ export const checkEmailDuplicate = async (email: string) => {
 // 이메일 인증번호 발송
 export const sendEmailAuthCode = async (email: string) => {
   const cleanEmail = email.trim();
-  const response = await fetch(`${API_BASE_URL}/user/auth-email/request`, {
+  const response = await fetch(`${API_BASE_URL}/v1/user/auth-email/request`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: cleanEmail }),
@@ -41,7 +41,7 @@ export const sendEmailAuthCode = async (email: string) => {
 
 // 이메일 인증번호 검증
 export const verifyEmailAuthCode = async (email: string, code: string) => {
-  const response = await fetch(`${API_BASE_URL}/user/auth-email/verify`, {
+  const response = await fetch(`${API_BASE_URL}/v1/user/auth-email/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, code }),
@@ -56,7 +56,7 @@ export const verifyEmailAuthCode = async (email: string, code: string) => {
 
 // 로그인
 export const login = async (loginData: { email: string; password: string }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(loginData),
@@ -74,7 +74,7 @@ export const login = async (loginData: { email: string; password: string }) => {
 
 // 로그인된 사용자 정보 조회
 export const getLoggedInUser = async () => {
-  const response = await fetch(`${API_BASE_URL}/auth/userCheck`, {
+  const response = await fetch(`${API_BASE_URL}/v1/auth/userCheck`, {
     method: 'GET',
     headers: { 'Cache-control': 'no-store', Pragma: 'no-cache' },
     credentials: 'include', // 쿠키 포함 (세션 유지용)
@@ -89,7 +89,7 @@ export const getLoggedInUser = async () => {
 
 // 마이페이지 회원 정보 수정
 export const updateUser = async (userData: any) => {
-  const response = await fetch(`${API_BASE_URL}/user/update`, {
+  const response = await fetch(`${API_BASE_URL}/v1/user/update`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
@@ -105,7 +105,7 @@ export const updateUser = async (userData: any) => {
 
 // 로그아웃
 export const logout = async () => {
-  const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+  const response = await fetch(`${API_BASE_URL}/v1/auth/logout`, {
     method: 'POST',
     credentials: 'include', // 쿠키 포함 (세션 유지용)
   });
@@ -120,7 +120,7 @@ export const logout = async () => {
 
 // 비밀번호 찾기
 export const forgotPassword = async (loginData: { email: string; phone: string }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+  const response = await fetch(`${API_BASE_URL}/v1/auth/forgot-password`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(loginData),
@@ -139,7 +139,7 @@ export const forgotPassword = async (loginData: { email: string; phone: string }
 
 // 메인-배너 가져오기
 export const getBanners = async () => {
-  const response = await fetch(`${API_BASE_URL}/product/banners`, {
+  const response = await fetch(`${API_BASE_URL}/v1/product/banners`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -154,7 +154,7 @@ export const getBanners = async () => {
 
 // 모든 상품 정보 가져오기
 export const fetchProductsInfo = async () => {
-  const response = await fetch(`${API_BASE_URL}/product/products`, {
+  const response = await fetch(`${API_BASE_URL}/v1/product/products`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -168,7 +168,7 @@ export const fetchProductsInfo = async () => {
 
 // 선택 카테고리별 상품 정보 가져오기
 export const fetchCategoryProducts = async (categoryId: string) => {
-  const response = await fetch(`${API_BASE_URL}/product/products/${categoryId}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/product/products/${categoryId}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -182,7 +182,7 @@ export const fetchCategoryProducts = async (categoryId: string) => {
 
 // 상품 상세 조회
 export const getProductDetail = async (productId: number) => {
-  const response = await fetch(`${API_BASE_URL}/product/${productId}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/product/${productId}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -197,21 +197,21 @@ export const getProductDetail = async (productId: number) => {
 
 // 상품 검색
 export const searchProducts = async (query: string): Promise<Product[]> => {
-  const response = await fetch(`${API_BASE_URL}/product/search?q=${encodeURIComponent(query)}`);
+  const response = await fetch(`${API_BASE_URL}/v1/product/search?q=${encodeURIComponent(query)}`);
   if (!response.ok) throw new Error('검색 실패');
   return response.json();
 };
 
 // 장바구니 목록 가져오기
 export const getCartItems = async (userId: number): Promise<CartItem[]> => {
-  const response = await fetch(`${API_BASE_URL}/cart/${userId}`);
+  const response = await fetch(`${API_BASE_URL}/v1/cart/${userId}`);
   if (!response.ok) throw new Error('장바구니 불러오기 실패');
   return response.json();
 };
 
 // 장바구니 상품 담기
 export const addToCart = async (userId: number, productId: number, count: number = 1) => {
-  const response = await fetch(`${API_BASE_URL}/cart`, {
+  const response = await fetch(`${API_BASE_URL}/v1/cart`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -228,7 +228,7 @@ export const addToCart = async (userId: number, productId: number, count: number
 
 // 장바구니에서 상품 삭제
 export const deleteCartItem = async (userId: number, productId: number) => {
-  const response = await fetch(`${API_BASE_URL}/cart/${userId}/${productId}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/cart/${userId}/${productId}`, {
     method: 'DELETE',
     credentials: 'include',
   });
@@ -243,7 +243,7 @@ export const deleteCartItem = async (userId: number, productId: number) => {
 
 // 주문하기
 export const order = async (orderData: any) => {
-  const response = await fetch(`${API_BASE_URL}/order`, {
+  const response = await fetch(`${API_BASE_URL}/v1/order`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(orderData),
@@ -253,7 +253,7 @@ export const order = async (orderData: any) => {
 };
 
 export const updateCartItem = async (userId: number, itemId: number, quantity: number) => {
-  const response = await fetch(`/api/cart/${userId}/items/${itemId}`, {
+  const response = await fetch(`/api/v1/cart/${userId}/items/${itemId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ count: quantity }),
@@ -265,7 +265,7 @@ export const updateCartItem = async (userId: number, itemId: number, quantity: n
 
 // 주문 목록 조회
 export const getOrderList = async () => {
-  const response = await fetch(`${API_BASE_URL}/mypage/orders`, {
+  const response = await fetch(`${API_BASE_URL}/v1/mypage/orders`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -284,7 +284,7 @@ export const getOrderList = async () => {
 
 // 주문 상세 조회
 export const getOrderDetail = async (orderId: number) => {
-  const response = await fetch(`${API_BASE_URL}/mypage/orders/${orderId}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/mypage/orders/${orderId}`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
